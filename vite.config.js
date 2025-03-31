@@ -7,4 +7,10 @@ export default defineConfig({
   plugins: [react(),
     tailwindcss(),
   ],
+  resolve: {
+    alias: {
+      '@fonts': '/src/assets/fonts', 
+      '@images': '/src/assets/images', 
+    },
+  },
 })

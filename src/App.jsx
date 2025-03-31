@@ -4,7 +4,9 @@ import './App.css'
 function App() {
 
   return (
-    <div className=''>
+    <div className='min-h-[100vh] initialPage font-smt
+     text-3xl text-white'>
+      wews
     </div>
   )
 }
