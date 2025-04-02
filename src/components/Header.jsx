@@ -1,6 +1,11 @@
 import smallBracket from '@images/smallBracket.svg'
+import { useState } from 'react';
+import { useMatrixSizeStore } from '../utils/store';
 
 export default function Header() {
+
+
+
   return (
     <header className="flex flex-col px-[60px]">
       <div className="flex justify-between">
@@ -23,28 +28,35 @@ export default function Header() {
   );
 }
 function MatrixSizeSection() {
+  const {matrixSize,setMatrixSize} = useMatrixSizeStore((state) => state);
+
+  function SizeButton({text}) {
+    return <div
+      onClick={() => {
+        matrixSize !== text && setMatrixSize(text);
+      } }
+      className={`h-[50px] w-[150px] tracking-[-0.05em]
+        ${matrixSize === text ? 'bg-white text-mainBlack' :
+          'text-white border-white border-solid border cursor-pointer'}
+           flex justify-center items-center
+        text-[40px]`}
+    >
+      {text.toUpperCase()}
+    </div>;
+  }
+
   return (
-    <div className="flex flex-col mt-[40px]">
+    <div className="flex flex-col mt-[40px] gap-[5px]">
       <h3 className="text-[30px] tracking-[-0.03em]">MATRIXES</h3>
       <div className="flex gap-[33px]">
-        <div
-          className="h-[50px] w-[150px] tracking-[-0.05em]
-      bg-white text-mainBlack flex justify-center items-center
-      text-[40px]"
-        >
-          SMALL
-        </div>
-        <div
-          className="h-[50px] w-[150px] tracking-[-0.05em]
-       text-white flex justify-center items-center 
-      text-[40px] border border-white border-solid"
-        >
-          LARGE
-        </div>
+        <SizeButton text={"small"}/>
+        <SizeButton text={"large"}/>
       </div>
     </div>
   );
 }
+
+
 
 function FastForwardSection() {
   return (
