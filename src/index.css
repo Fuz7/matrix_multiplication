@@ -1,10 +1,14 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: 'smt';
-  src: url('@fonts/ShareTechMono-Regular.ttf');
+  font-family: "smt";
+  src: url("@fonts/ShareTechMono-Regular.ttf");
 }
 
-@theme{
-  --font-smt: 'smt','sans-serif';
+@theme {
+  --font-smt: "smt", "sans-serif";
+}
+
+@theme {
+  --color-mainBlack: #050505;
 }
