@@ -1,5 +1,4 @@
 import smallBracket from '@images/smallBracket.svg'
-import { useState } from 'react';
 import { useMatrixSizeStore } from '../utils/store';
 
 export default function Header() {
