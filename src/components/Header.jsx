@@ -1,5 +1,5 @@
 import smallBracket from '@images/smallBracket.svg'
-import { useMatrixSizeStore } from '../utils/store';
+import { useMatrixSizeStore, useStartedStore } from '../utils/store';
 
 export default function Header() {
 
@@ -58,8 +58,11 @@ function MatrixSizeSection() {
 
 
 function FastForwardSection() {
+
+  const started = useStartedStore((state)=>state.started)
+
   return (
-    <div className="flex gap-[40px] mt-[50px]">
+    <div className={`flex gap-[40px] mt-[50px] ${started?'flex':'hidden'}`}>
       <div className="flex gap-[10px] text-white">
         <div
           className="flex flex-col justify-center items-center

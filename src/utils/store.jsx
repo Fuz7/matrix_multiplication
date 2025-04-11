@@ -7,6 +7,13 @@ export const useMatrixSizeStore = create((set)=>{
     }
 })
 
+export const useStartedStore = create((set)=>{
+    return{
+        started:false,
+        setStarted:(playing)=>set({started:playing})
+    }
+})
+
 // export const useMatrix1DimensionStore = create((set)=>{
 //     return{
 //         columnSize: '',
