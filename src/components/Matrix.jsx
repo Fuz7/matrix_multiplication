@@ -1,3 +1,5 @@
+import { useState } from "react"
+
 export default function Matrix() {
   return (
     <div className="flex items-center gap-[10px]">
@@ -51,6 +53,8 @@ function RightBracket({ rowSize }) {
 function MatrixInputs({ rowSize, colSize }) {
   const numberOfInputs = rowSize * colSize
   const inputsArray = Array.from({ length: numberOfInputs }, () => '');
+  const [inputsData, setInputsData] = useState(Array.from({ length: numberOfInputs }, () => ''))
+
 
   return (
     <div className={`grid gap-[20px]`}
@@ -60,8 +64,18 @@ function MatrixInputs({ rowSize, colSize }) {
     >
       {inputsArray.map((_, index) => {
         return (
-          <input key={"matrix" + index} className="bg-matrixInputBackground 
-          w-[50px] aspect-square"></input>
+          <input
+            onInput={(e) => {
+              const { value } = e.target
+              let newValue = value.replace(/[^0-9]/g, '');
+              if (newValue.length > 1) {
+                newValue = newValue[0]
+              }
+              setInputsData([...inputsData.slice(0, index), newValue, ...inputsData.slice(index + 1)])
+            }}
+            value={inputsData[index]}
+            key={"matrix" + index} className="bg-matrixInputBackground 
+          w-[50px] aspect-square text-center"></input>
         )
       })}
     </div>
