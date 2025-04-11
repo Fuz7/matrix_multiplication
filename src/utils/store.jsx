@@ -6,3 +6,12 @@ export const useMatrixSizeStore = create((set)=>{
         setMatrixSize: (size)=> set({matrixSize:size})
     }
 })
+
+// export const useMatrix1DimensionStore = create((set)=>{
+//     return{
+//         columnSize: '',
+//         setColumnSize:(size)=> set({columnSize:size}),
+//         rowSize:'',
+//         setRowSize:'',
+//     }
+// })

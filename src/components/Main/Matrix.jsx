@@ -1,13 +1,27 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
-export default function Matrix() {
+export default function Matrix({row,column}) {
+  const [rowDisplay,setRowDisplay] = useState(row)
+  const [columnDisplay,setColumnDisplay] = useState(column)
+  useEffect(()=>{
+    if(row !== ''){
+      setRowDisplay(row)
+    }
+    if(column !== ''){
+      setColumnDisplay(column)
+    }
+    
+    
+  },[row,column])
+
   return (
     <div className="flex items-center gap-[10px]">
-      <LeftBracket rowSize={3} />
-      <MatrixInputs rowSize={3} colSize={4} />
-      <RightBracket rowSize={3} />
+      <LeftBracket rowSize={rowDisplay} />
+      <MatrixInputs rowSize={rowDisplay} colSize={columnDisplay} />
+      <RightBracket rowSize={rowDisplay} />
     </div>
   )
+
 }
 
 function LeftBracket({ rowSize }) {
@@ -55,6 +69,9 @@ function MatrixInputs({ rowSize, colSize }) {
   const inputsArray = Array.from({ length: numberOfInputs }, () => '');
   const [inputsData, setInputsData] = useState(Array.from({ length: numberOfInputs }, () => ''))
 
+  useEffect(()=>{
+    setInputsData(Array.from({ length: numberOfInputs }, () => ''))
+  },[numberOfInputs])
 
   return (
     <div className={`grid gap-[20px]`}
