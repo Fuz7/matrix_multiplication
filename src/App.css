@@ -2,3 +2,8 @@
   background-image: url('@images/marbleBackground.jpg');
 }
 
+.errorMatrixInput{
+  border-width: 1px;
+  border-color: red;
+  border-radius: 4px;
+}

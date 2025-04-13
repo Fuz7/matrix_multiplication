@@ -1,3 +1,4 @@
+import { input } from "motion/react-client"
 import { useEffect, useRef, useState } from "react"
 
 export default function Matrix({row,column}) {
@@ -88,11 +89,14 @@ function MatrixInputs({ rowSize, colSize }) {
               if (newValue.length > 1) {
                 newValue = newValue[0]
               }
+              if(newValue !== ''){
+                e.target.classList.remove('errorMatrixInput')
+              }
               setInputsData([...inputsData.slice(0, index), newValue, ...inputsData.slice(index + 1)])
             }}
             value={inputsData[index]}
-            key={"matrix" + index} className="bg-matrixInputBackground 
-          w-[50px] aspect-square text-center"></input>
+            key={"matrix" + index} className="bg-matrixInputBackground  leading-none
+          w-[50px] aspect-square text-center matrixInput "></input>
         )
       })}
     </div>

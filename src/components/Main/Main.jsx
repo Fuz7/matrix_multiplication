@@ -3,6 +3,7 @@ import DimensionInput from "./DimensionInput"
 import Matrix from "./Matrix"
 import multiplicationSymbol from '@images/multiplicationSymbol.svg'
 import { useStartedStore } from "../../utils/store"
+import { useAnimate } from "motion/react"
 
 export default function Main() {
 
@@ -33,8 +34,21 @@ export default function Main() {
 }
 
 function StartButton({ matrix1Pos, matrix2Pos }) {
-  const setStarted = useStartedStore((state) => state.setStarted)
+  const {started,setStarted} = useStartedStore((state) => state)
   const [isEnabled, setIsEnabled] = useState(true)
+  const [startButtonScope,animate] = useAnimate(null)
+
+  useEffect(()=>{
+    if(started === true){
+      const animateStartButton = async() => {
+        await animate(startButtonScope.current,{opacity:0},{duration:0.5,ease:'easeInOut'})
+        startButtonScope.current.disabled = true
+        startButtonScope.classList.add('invisible')
+      }
+      animateStartButton()
+    }
+  })
+
   useEffect(() => {
     if (matrix1Pos.row === '' || matrix1Pos.col === ''
       || matrix2Pos.row === '' || matrix2Pos.col === '') {
@@ -49,15 +63,27 @@ function StartButton({ matrix1Pos, matrix2Pos }) {
     setIsEnabled(true)
   }, [matrix1Pos, matrix2Pos, setIsEnabled])
 
+  function validateMatrixInput(){
+    const inputs = Array.from(document.getElementsByClassName('matrixInput'))
+    inputs.forEach((input)=> input.classList.remove("errorMatrixInput"))
+    const missingInput = inputs.filter((input)=>input.value === '');
+    if(missingInput.length === 0) return true
+    missingInput.forEach((input)=> input.classList.add("errorMatrixInput"))
+    console.log(missingInput)
+  }
+
+
   return (
     <button
+    ref={startButtonScope}
       onClick={() => {
+        if(!validateMatrixInput()) return 
         setStarted(true)
       }}
       disabled={!isEnabled}
       className={`text-[64px] w-[250px] h-[74px] flex 
     justify-center items-center tracking-[-0.05em] 
-    ${isEnabled?'cursor-pointer':'opacity-50 cursor-default'}
+    ${isEnabled && !started?'cursor-pointer':'opacity-50 cursor-default'}
     border border-white`}>START</button>
   )
 }
