@@ -133,6 +133,7 @@ function MultiplicationType() {
           {duration:1,ease:'easeInOut'})
         await animate('.strassenType',{y:-100},
           {duration:0.8,ease:'easeInOut'})
+        animate('.typeUnderline',{opacity:0},{duration:0.5,ease:'easeInOut'})
       }
       typeHeaderAnimation()
     }
@@ -156,7 +157,8 @@ function MultiplicationType() {
       <img src={smallBracket} alt="" />
       <h3 className='text-[60px] tracking-[-0.05em] relative'>STANDARD
         <span className={`absolute bottom-0 left-[6px] w-[96%] h-[2px] bg-white
-          ${multiplicationType === 'standard' ? 'visible' : 'invisible'} 
+          typeUnderline
+          ${multiplicationType === 'standard'? 'visible' : 'invisible'} 
           `}
         ></span>
       </h3>
@@ -173,7 +175,8 @@ function MultiplicationType() {
       <img src={smallBracket} alt="" />
       <h3 className='text-[60px] tracking-[-0.05em] relative'>STRASSEN
         <span className={`absolute bottom-0 left-[6px] w-[96%] h-[2px] bg-white
-          ${multiplicationType === 'strassen' ? 'visible' : 'invisible'} 
+        typeUnderline
+          ${multiplicationType === 'strassen'? 'visible' : 'invisible'} 
            `}></span>
       </h3>
       <img className='rotate-180' src={smallBracket} alt="" />
