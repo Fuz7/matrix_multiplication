@@ -14,6 +14,13 @@ export const useStartedStore = create((set)=>{
     }
 })
 
+export const useMultiplicationType = create((set)=>{
+    return{
+        multiplicationType:'standard',
+        setMultiplicationType:(type)=>set({multiplicationType:type})
+    }
+})
+
 // export const useMatrix1DimensionStore = create((set)=>{
 //     return{
 //         columnSize: '',

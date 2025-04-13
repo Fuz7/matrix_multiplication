@@ -1,5 +1,5 @@
 import smallBracket from '@images/smallBracket.svg'
-import { useMatrixSizeStore, useStartedStore } from '../utils/store';
+import { useMatrixSizeStore, useMultiplicationType, useStartedStore } from '../utils/store';
 
 export default function Header() {
 
@@ -11,29 +11,18 @@ export default function Header() {
         <MatrixSizeSection />
         <FastForwardSection />
       </div>
-      <div className='flex gap-[90px] justify-center'>
-        <div className='flex items-center gap-[20px]'>
-          <img src={smallBracket} alt="" />
-          <h3 className='text-[60px] tracking-[-0.05em]'>STANDARD</h3>
-          <img className='rotate-180' src={smallBracket} alt="" />
-        </div>
-        <div className='flex items-center gap-[20px]'>
-          <img src={smallBracket} alt="" />
-          <h3 className='text-[60px] tracking-[-0.05em]'>STRASSEN</h3>
-          <img className='rotate-180' src={smallBracket} alt="" />
-        </div>
-      </div>
+      <MultiplicationType />
     </header>
   );
 }
 function MatrixSizeSection() {
-  const {matrixSize,setMatrixSize} = useMatrixSizeStore((state) => state);
+  const { matrixSize, setMatrixSize } = useMatrixSizeStore((state) => state);
 
-  function SizeButton({text}) {
+  function SizeButton({ text }) {
     return <div
       onClick={() => {
         matrixSize !== text && setMatrixSize(text);
-      } }
+      }}
       className={`h-[50px] w-[150px] tracking-[-0.05em]
         ${matrixSize === text ? 'bg-white text-mainBlack' :
           'text-white border-white border-solid border cursor-pointer'}
@@ -48,8 +37,8 @@ function MatrixSizeSection() {
     <div className="flex flex-col mt-[40px] gap-[5px]">
       <h3 className="text-[30px] tracking-[-0.03em]">MATRIXES</h3>
       <div className="flex gap-[33px]">
-        <SizeButton text={"small"}/>
-        <SizeButton text={"large"}/>
+        <SizeButton text={"small"} />
+        <SizeButton text={"large"} />
       </div>
     </div>
   );
@@ -59,10 +48,10 @@ function MatrixSizeSection() {
 
 function FastForwardSection() {
 
-  const started = useStartedStore((state)=>state.started)
+  const started = useStartedStore((state) => state.started)
 
   return (
-    <div className={`flex gap-[40px] mt-[50px] ${started?'flex':'hidden'}`}>
+    <div className={`flex gap-[40px] mt-[50px] ${started ? 'flex' : 'hidden'}`}>
       <div className="flex gap-[10px] text-white">
         <div
           className="flex flex-col justify-center items-center
@@ -102,4 +91,48 @@ function FastForwardSection() {
       </div>
     </div>
   );
+}
+
+function MultiplicationType() {
+
+  const { multiplicationType, setMultiplicationType } =
+    useMultiplicationType((state) => state)
+
+
+  return (<div className='flex gap-[90px] justify-center'>
+    <div
+     onClick={()=>{
+      if(multiplicationType !== 'standard'){
+        setMultiplicationType('standard')
+      }
+     }}
+     className={`flex items-center gap-[20px]
+          ${multiplicationType === 'standard' ? 'cursor-default' : 'cursor-pointer'} 
+      `}>
+      <img src={smallBracket} alt="" />
+      <h3 className='text-[60px] tracking-[-0.05em] relative'>STANDARD
+        <span className={`absolute bottom-0 left-[6px] w-[96%] h-[2px] bg-white
+          ${multiplicationType === 'standard' ? 'visible' : 'invisible'} 
+          `}
+        ></span>
+      </h3>
+      <img className='rotate-180' src={smallBracket} alt="" />
+    </div>
+    <div 
+    onClick={()=>{
+      
+    }}
+    className={`flex items-center gap-[20px]
+          ${multiplicationType === 'strassen' ? 'cursor-default' : 'cursor-pointer'} 
+      
+      `}>
+      <img src={smallBracket} alt="" />
+      <h3 className='text-[60px] tracking-[-0.05em] relative'>STRASSEN
+        <span className={`absolute bottom-0 left-[6px] w-[96%] h-[2px] bg-white
+          ${multiplicationType === 'strassen' ? 'visible' : 'invisible'} 
+           `}></span>
+      </h3>
+      <img className='rotate-180' src={smallBracket} alt="" />
+    </div>
+  </div>);
 }
