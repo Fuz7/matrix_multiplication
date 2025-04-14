@@ -4,13 +4,16 @@ import Matrix from "./Matrix";
 import multiplicationSymbol from "@images/multiplicationSymbol.svg";
 import { useStartedStore } from "../../utils/store";
 import { useAnimate } from "motion/react";
+import equalSymbol from '@images/equalSymbol.svg'
+import { delayInMs } from "../../utils/time";
+
 
 export default function Main() {
-  const [matrix1Pos, setMatrix1Pos] = useState({ row: "2", col: "1" });
-  const [matrix2Pos, setMatrix2Pos] = useState({ row: "1", col: "2" });
-
+  const [matrix1Pos, setMatrix1Pos] = useState({ row: "3", col: "2" });
+  const [matrix2Pos, setMatrix2Pos] = useState({ row: "2", col: "3" });
   const started = useStartedStore((state) => state.started);
   const [multMatrixScope, animate] = useAnimate(null);
+  const [outputMatrixScope, animateOutput] = useAnimate(null)
 
   useEffect(() => {
     if (started === true) {
@@ -20,11 +23,29 @@ export default function Main() {
 
       animate(
         multMatrixScope.current,
-        { x:matrixSizeXOffset-multMatrixScopeXOffset + 60, y: 270 },
-        { duration: 1.3, ease: "easeOut", delay: 5 }
+        { x: matrixSizeXOffset - multMatrixScopeXOffset + 60, y: 150 },
+        { duration: 0.7, ease: "easeOut", delay: 4 }
       );
     }
   }, [started, animate, multMatrixScope]);
+
+
+  useEffect(() => {
+    if (started === true) {
+      const fadeOutOutputMatrix = async() =>{
+        
+        await delayInMs(5000)
+        const multMatrixesOffset = multMatrixScope.current.getBoundingClientRect()
+        outputMatrixScope.current.classList.remove('invisible')
+        const outputMatrixPositionWithMargin = multMatrixesOffset.left + multMatrixesOffset.width + 100
+        outputMatrixScope.current.style.left = `${outputMatrixPositionWithMargin}px`
+        outputMatrixScope.current.style.top = `${multMatrixesOffset.top}px`
+        await animateOutput(outputMatrixScope.current, { opacity: 1 }, { duration: 1, ease: 'easeInOut'})
+      }
+      fadeOutOutputMatrix()
+
+    }
+  }, [started, animateOutput, outputMatrixScope,multMatrixScope]);
 
   return (
     <main className="flex flex-col items-center gap-[45px]">
@@ -38,7 +59,7 @@ export default function Main() {
           </div>
           <DimensionInput matrixPos={matrix1Pos} setMatrixPos={setMatrix1Pos} />
         </div>
-        <img src={multiplicationSymbol} className="mb-[66px]" alt="" />
+        <img src={multiplicationSymbol} className="mb-[66px]" alt=""/>
         <div className="flex flex-col gap-[30px]">
           <div className="w-[360px] h-[300px] flex flex-col justify-center items-center">
             <Matrix row={matrix2Pos.row} column={matrix2Pos.col}></Matrix>
@@ -47,6 +68,20 @@ export default function Main() {
         </div>
       </div>
       <StartButton matrix1Pos={matrix1Pos} matrix2Pos={matrix2Pos} />
+      <div
+        ref={outputMatrixScope}
+        className="fixed flex gap-[100px] opacity-0 invisible">
+        <img src={equalSymbol}>
+
+        </img>
+        <div
+          className="w-[360px] h-[300px] flex flex-col justify-center items-center
+       ">
+          <Matrix row={matrix1Pos.row} column={matrix2Pos.col}
+            matrixOutput={true}></Matrix>
+        </div>
+
+      </div>
     </main>
   );
 }
@@ -65,7 +100,8 @@ function StartButton({ matrix1Pos, matrix2Pos }) {
           { duration: 0.5, ease: "easeInOut" }
         );
         startButtonScope.current.disabled = true;
-        startButtonScope.classList.add("invisible");
+        startButtonScope.current.
+          classList.add("invisible");
       };
       animateStartButton();
     }
@@ -82,7 +118,7 @@ function StartButton({ matrix1Pos, matrix2Pos }) {
       return;
     }
 
-    if (matrix1Pos.row !== matrix2Pos.col) {
+    if (matrix1Pos.col !== matrix2Pos.row) {
       setIsEnabled(false);
       return;
     }

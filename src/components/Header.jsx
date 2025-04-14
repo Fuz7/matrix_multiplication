@@ -73,42 +73,42 @@ function FastForwardSection() {
   return (
     <motion.div ref={fastForwardScope} className={`flex gap-[40px] mt-[50px] -translate-y-[100px]`}>
       <div className="flex gap-[10px] text-white">
-        <div
+        <button
           className="flex flex-col justify-center items-center
             text-white border border-solid border-white tracking-[-0.1em]
-            w-[70px] h-[50px] text-[40px] "
+            w-[70px] h-[50px] text-[40px] cursor-pointer"
         >
           2x
-        </div>
-        <div
+        </button>
+        <button
           className="flex flex-col justify-center items-center
             text-white border border-solid border-white tracking-[-0.1em]
-            w-[70px] h-[50px] text-[40px] "
+            w-[70px] h-[50px] text-[40px] cursor-pointer"
         >
           4x
-        </div>
-        <div
+        </button>
+        <button
           className="flex flex-col justify-center items-center
             text-white border border-solid border-white tracking-[-0.1em]
-            w-[70px] h-[50px] text-[40px] "
+            w-[70px] h-[50px] text-[40px] cursor-pointer"
         >
           8x
-        </div>
-        <div
+        </button>
+        <button
           className="flex flex-col justify-center items-center
             text-white border border-solid border-white tracking-[-0.1em]
-            w-[70px] h-[50px] text-[40px] "
+            w-[70px] h-[50px] text-[40px] cursor-pointer"
         >
           16x
-        </div>
+        </button>
       </div>
-      <div
+      <button
         className="flex flex-col justify-center items-center
           h-[50px] w-[120px] border border-solid border-white text-[40px]
           tracking-[-0.1em]"
       >
         SKIP
-      </div>
+      </button>
     </motion.div>
   );
 }

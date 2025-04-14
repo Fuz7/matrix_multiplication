@@ -1,7 +1,8 @@
 import { input } from "motion/react-client"
 import { useEffect, useRef, useState } from "react"
+import { useStartedStore } from "../../utils/store"
 
-export default function Matrix({row,column}) {
+export default function Matrix({row,column,matrixOutput = false}) {
   const [rowDisplay,setRowDisplay] = useState(row)
   const [columnDisplay,setColumnDisplay] = useState(column)
   useEffect(()=>{
@@ -16,9 +17,9 @@ export default function Matrix({row,column}) {
   },[row,column])
 
   return (
-    <div className="flex items-center gap-[10px]">
+    <div className={`flex items-center gap-[10px]`}>
       <LeftBracket rowSize={rowDisplay} />
-      <MatrixInputs rowSize={rowDisplay} colSize={columnDisplay} />
+      <MatrixInputs rowSize={rowDisplay} colSize={columnDisplay} matrixOutput={matrixOutput} />
       <RightBracket rowSize={rowDisplay} />
     </div>
   )
@@ -65,10 +66,11 @@ function RightBracket({ rowSize }) {
   )
 }
 
-function MatrixInputs({ rowSize, colSize }) {
+function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
   const numberOfInputs = rowSize * colSize
   const inputsArray = Array.from({ length: numberOfInputs }, () => '');
   const [inputsData, setInputsData] = useState(Array.from({ length: numberOfInputs }, () => ''))
+  const started = useStartedStore((state) => state.started);
 
   useEffect(()=>{
     setInputsData(Array.from({ length: numberOfInputs }, () => ''))
@@ -83,6 +85,7 @@ function MatrixInputs({ rowSize, colSize }) {
       {inputsArray.map((_, index) => {
         return (
           <input
+            disabled={started || matrixOutput}
             onInput={(e) => {
               const { value } = e.target
               let newValue = value.replace(/[^0-9]/g, '');
@@ -95,8 +98,8 @@ function MatrixInputs({ rowSize, colSize }) {
               setInputsData([...inputsData.slice(0, index), newValue, ...inputsData.slice(index + 1)])
             }}
             value={inputsData[index]}
-            key={"matrix" + index} className="bg-matrixInputBackground  leading-none
-          w-[50px] aspect-square text-center matrixInput "></input>
+            key={"matrix" + index} className={`bg-matrixInputBackground  leading-none
+          w-[50px] aspect-square text-center ${!matrixOutput&&'matrixInput'} `}></input>
         )
       })}
     </div>
