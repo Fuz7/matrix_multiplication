@@ -1,4 +1,3 @@
-import { input } from "motion/react-client"
 import { useEffect, useRef, useState } from "react"
 import { useStartedStore } from "../../utils/store"
 
@@ -68,12 +67,13 @@ function RightBracket({ rowSize }) {
 
 function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
   const numberOfInputs = rowSize * colSize
-  const inputsArray = Array.from({ length: numberOfInputs }, () => '');
   const [inputsData, setInputsData] = useState(Array.from({ length: numberOfInputs }, () => ''))
+  const inputsArray = Array.from({ length: numberOfInputs }, (_,i) => {
+    return{row:Math.floor(i/colSize),col:i%colSize}
+  });
   const started = useStartedStore((state) => state.started);
   const inputsContainerRef = useRef()
   useEffect(()=>{
-
     setInputsData(Array.from({ length: numberOfInputs }, () => ''))
     const inputs = Array.from(inputsContainerRef.current.getElementsByClassName("matrixInput"));
     inputs.forEach((input) => input.classList.remove("errorMatrixInput"));
@@ -87,7 +87,7 @@ function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
         gridTemplateColumns: `repeat(${colSize},50px)`,
       }}
     >
-      {inputsArray.map((_, index) => {
+      {inputsArray.map((matrixPos, index) => {
         return (
           <input
             disabled={started || matrixOutput}
@@ -102,7 +102,9 @@ function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
               }
               setInputsData([...inputsData.slice(0, index), newValue, ...inputsData.slice(index + 1)])
             }}
-            value={inputsData[index]}
+            data-row={matrixPos.row}
+            data-col={matrixPos.col }
+            value={inputsData[index] ?? ''}
             key={"matrix" + index} className={`bg-matrixInputBackground  leading-none
           w-[50px] aspect-square text-center ${!matrixOutput&&'matrixInput'} `}></input>
         )
