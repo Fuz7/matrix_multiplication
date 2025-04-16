@@ -70,7 +70,7 @@ export default function Main() {
       <StartButton matrix1Pos={matrix1Pos} matrix2Pos={matrix2Pos} />
       <div
         ref={outputMatrixScope}
-        className="fixed flex gap-[100px] opacity-0 invisible">
+        className="absolute flex gap-[100px] opacity-0 invisible">
         <img src={equalSymbol}>
 
         </img>

@@ -71,13 +71,18 @@ function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
   const inputsArray = Array.from({ length: numberOfInputs }, () => '');
   const [inputsData, setInputsData] = useState(Array.from({ length: numberOfInputs }, () => ''))
   const started = useStartedStore((state) => state.started);
-
+  const inputsContainerRef = useRef()
   useEffect(()=>{
+
     setInputsData(Array.from({ length: numberOfInputs }, () => ''))
+    const inputs = Array.from(inputsContainerRef.current.getElementsByClassName("matrixInput"));
+    inputs.forEach((input) => input.classList.remove("errorMatrixInput"));
+
   },[numberOfInputs])
 
   return (
     <div className={`grid gap-[20px]`}
+    ref={inputsContainerRef}
       style={{
         gridTemplateColumns: `repeat(${colSize},50px)`,
       }}

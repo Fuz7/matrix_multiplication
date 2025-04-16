@@ -6,7 +6,7 @@ import Main from './components/Main/Main'
 function App() {
   
   return (
-    <div className='min-h-[100vh] initialPage font-smt
+    <div className='min-h-[100vh] initialPage font-smt relative
      text-3xl text-white'>
       <Header />
       <Main></Main>
