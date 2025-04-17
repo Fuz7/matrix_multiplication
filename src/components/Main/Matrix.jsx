@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useStartedStore } from "../../utils/store"
 
-export default function Matrix({row,column,matrixOutput = false}) {
+export default function Matrix({row,column,matrixOutput = false,id}) {
   const [rowDisplay,setRowDisplay] = useState(row)
   const [columnDisplay,setColumnDisplay] = useState(column)
   useEffect(()=>{
@@ -16,7 +16,10 @@ export default function Matrix({row,column,matrixOutput = false}) {
   },[row,column])
 
   return (
-    <div className={`flex items-center gap-[10px]`}>
+    <div id={id}
+     data-row={row}
+     data-col={column}
+     className={`flex items-center gap-[10px]`}>
       <LeftBracket rowSize={rowDisplay} />
       <MatrixInputs rowSize={rowDisplay} colSize={columnDisplay} matrixOutput={matrixOutput} />
       <RightBracket rowSize={rowDisplay} />

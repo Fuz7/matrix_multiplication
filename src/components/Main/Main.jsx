@@ -6,6 +6,8 @@ import { useStartedStore } from "../../utils/store";
 import { useAnimate } from "motion/react";
 import equalSymbol from '@images/equalSymbol.svg'
 import { delayInMs } from "../../utils/time";
+import { standardMultiplication } from "../../utils/multiplication";
+import { getMatrixArray } from "../../utils/array";
 
 
 export default function Main() {
@@ -55,14 +57,14 @@ export default function Main() {
       >
         <div className="flex flex-col gap-[30px]">
           <div className="w-[360px] h-[300px] flex flex-col justify-center items-center">
-            <Matrix row={matrix1Pos.row} column={matrix1Pos.col}></Matrix>
+            <Matrix row={matrix1Pos.row} column={matrix1Pos.col} id={'matrix1'}></Matrix>
           </div>
           <DimensionInput matrixPos={matrix1Pos} setMatrixPos={setMatrix1Pos} />
         </div>
         <img src={multiplicationSymbol} className="mb-[66px]" alt=""/>
         <div className="flex flex-col gap-[30px]">
           <div className="w-[360px] h-[300px] flex flex-col justify-center items-center">
-            <Matrix row={matrix2Pos.row} column={matrix2Pos.col}></Matrix>
+            <Matrix row={matrix2Pos.row} column={matrix2Pos.col} id={'matrix2'}></Matrix>
           </div>
           <DimensionInput matrixPos={matrix2Pos} setMatrixPos={setMatrix2Pos} />
         </div>
@@ -103,7 +105,10 @@ function StartButton({ matrix1Pos, matrix2Pos }) {
         startButtonScope.current.
           classList.add("invisible");
       };
+      const matrix1 = getMatrixArray('matrix1')
+      const matrix2 = getMatrixArray('matrix2')
       animateStartButton();
+      console.log(standardMultiplication(matrix1,matrix2))
     }
   });
 
@@ -131,7 +136,6 @@ function StartButton({ matrix1Pos, matrix2Pos }) {
     const missingInput = inputs.filter((input) => input.value === "");
     if (missingInput.length === 0) return true;
     missingInput.forEach((input) => input.classList.add("errorMatrixInput"));
-    console.log(missingInput);
   }
 
   return (
