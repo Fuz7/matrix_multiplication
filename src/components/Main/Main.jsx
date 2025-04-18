@@ -8,6 +8,7 @@ import equalSymbol from '@images/equalSymbol.svg'
 import { delayInMs } from "../../utils/time";
 import { standardMultiplication } from "../../utils/multiplication";
 import { getMatrixArray } from "../../utils/array";
+import { useStartButtonMatrixValidation } from "../hooks/validation";
 
 
 export default function Main() {
@@ -34,20 +35,20 @@ export default function Main() {
 
   useEffect(() => {
     if (started === true) {
-      const fadeOutOutputMatrix = async() =>{
-        
+      const fadeOutOutputMatrix = async () => {
+
         await delayInMs(5000)
         const multMatrixesOffset = multMatrixScope.current.getBoundingClientRect()
         outputMatrixScope.current.classList.remove('invisible')
         const outputMatrixPositionWithMargin = multMatrixesOffset.left + multMatrixesOffset.width + 100
         outputMatrixScope.current.style.left = `${outputMatrixPositionWithMargin}px`
         outputMatrixScope.current.style.top = `${multMatrixesOffset.top}px`
-        await animateOutput(outputMatrixScope.current, { opacity: 1 }, { duration: 1, ease: 'easeInOut'})
+        await animateOutput(outputMatrixScope.current, { opacity: 1 }, { duration: 1, ease: 'easeInOut' })
       }
       fadeOutOutputMatrix()
 
     }
-  }, [started, animateOutput, outputMatrixScope,multMatrixScope]);
+  }, [started, animateOutput, outputMatrixScope, multMatrixScope]);
 
   return (
     <main className="flex flex-col items-center gap-[45px]">
@@ -61,7 +62,7 @@ export default function Main() {
           </div>
           <DimensionInput matrixPos={matrix1Pos} setMatrixPos={setMatrix1Pos} />
         </div>
-        <img src={multiplicationSymbol} className="mb-[66px]" alt=""/>
+        <img src={multiplicationSymbol} className="mb-[66px]" alt="" />
         <div className="flex flex-col gap-[30px]">
           <div className="w-[360px] h-[300px] flex flex-col justify-center items-center">
             <Matrix row={matrix2Pos.row} column={matrix2Pos.col} id={'matrix2'}></Matrix>
@@ -89,9 +90,9 @@ export default function Main() {
 }
 
 function StartButton({ matrix1Pos, matrix2Pos }) {
-  const { started, setStarted } = useStartedStore((state) => state);
-  const [isEnabled, setIsEnabled] = useState(true);
   const [startButtonScope, animate] = useAnimate(null);
+  const { isEnabled, started, handleStart } = 
+  useStartButtonMatrixValidation(matrix1Pos, matrix2Pos)
 
   useEffect(() => {
     if (started === true) {
@@ -108,42 +109,17 @@ function StartButton({ matrix1Pos, matrix2Pos }) {
       const matrix1 = getMatrixArray('matrix1')
       const matrix2 = getMatrixArray('matrix2')
       animateStartButton();
-      console.log(standardMultiplication(matrix1,matrix2))
+      console.log(standardMultiplication(matrix1, matrix2))
     }
   });
 
-  useEffect(() => {
-    if (
-      matrix1Pos.row === "" ||
-      matrix1Pos.col === "" ||
-      matrix2Pos.row === "" ||
-      matrix2Pos.col === ""
-    ) {
-      setIsEnabled(false);
-      return;
-    }
 
-    if (matrix1Pos.col !== matrix2Pos.row) {
-      setIsEnabled(false);
-      return;
-    }
-    setIsEnabled(true);
-  }, [matrix1Pos, matrix2Pos, setIsEnabled]);
-
-  function validateMatrixInput() {
-    const inputs = Array.from(document.getElementsByClassName("matrixInput"));
-    inputs.forEach((input) => input.classList.remove("errorMatrixInput"));
-    const missingInput = inputs.filter((input) => input.value === "");
-    if (missingInput.length === 0) return true;
-    missingInput.forEach((input) => input.classList.add("errorMatrixInput"));
-  }
 
   return (
     <button
       ref={startButtonScope}
       onClick={() => {
-        if (!validateMatrixInput()) return;
-        setStarted(true);
+        handleStart()
       }}
       disabled={!isEnabled}
       className={`text-[64px] w-[250px] h-[74px] flex 

@@ -18,7 +18,7 @@ export function standardMultiplication(A, B) {
       let sum = 0;
       for(let k = 0; k < colA; k++){
         const product = A[i][k] * B[k][j]
-        steps.push({a:{row:i,col:k},b:{row:k,col:j},type:'multiply'})
+        steps.push({a:{row:i,col:k},b:{row:k,col:j},type:'multiply', value:product})
         sum+= product
       }
       result[i][j] = sum
