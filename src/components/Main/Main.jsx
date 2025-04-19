@@ -9,46 +9,16 @@ import { delayInMs } from "../../utils/time";
 import { standardMultiplication } from "../../utils/multiplication";
 import { getMatrixArray } from "../../utils/array";
 import { useStartButtonMatrixValidation } from "../hooks/validation";
+import { useHeaderAnimation, useStandardMatrixAnimation, useStartButtonAnimation } from "../hooks/animation";
 
 
 export default function Main() {
   const [matrix1Pos, setMatrix1Pos] = useState({ row: "3", col: "2" });
   const [matrix2Pos, setMatrix2Pos] = useState({ row: "2", col: "3" });
   const started = useStartedStore((state) => state.started);
-  const [multMatrixScope, animate] = useAnimate(null);
-  const [outputMatrixScope, animateOutput] = useAnimate(null)
+  const multMatrixScope = useHeaderAnimation(started)
+  const {outputMatrixScope} = useStandardMatrixAnimation(started,multMatrixScope)
 
-  useEffect(() => {
-    if (started === true) {
-      const matrixSizeElement = document.getElementById("matrixSizeHeader");
-      const matrixSizeXOffset = matrixSizeElement.getBoundingClientRect().left;
-      const multMatrixScopeXOffset = multMatrixScope.current.getBoundingClientRect().left
-
-      animate(
-        multMatrixScope.current,
-        { x: matrixSizeXOffset - multMatrixScopeXOffset + 60, y: 150 },
-        { duration: 0.7, ease: "easeOut", delay: 4 }
-      );
-    }
-  }, [started, animate, multMatrixScope]);
-
-
-  useEffect(() => {
-    if (started === true) {
-      const fadeOutOutputMatrix = async () => {
-
-        await delayInMs(5000)
-        const multMatrixesOffset = multMatrixScope.current.getBoundingClientRect()
-        outputMatrixScope.current.classList.remove('invisible')
-        const outputMatrixPositionWithMargin = multMatrixesOffset.left + multMatrixesOffset.width + 100
-        outputMatrixScope.current.style.left = `${outputMatrixPositionWithMargin}px`
-        outputMatrixScope.current.style.top = `${multMatrixesOffset.top}px`
-        await animateOutput(outputMatrixScope.current, { opacity: 1 }, { duration: 1, ease: 'easeInOut' })
-      }
-      fadeOutOutputMatrix()
-
-    }
-  }, [started, animateOutput, outputMatrixScope, multMatrixScope]);
 
   return (
     <main className="flex flex-col items-center gap-[45px]">
@@ -90,30 +60,9 @@ export default function Main() {
 }
 
 function StartButton({ matrix1Pos, matrix2Pos }) {
-  const [startButtonScope, animate] = useAnimate(null);
   const { isEnabled, started, handleStart } = 
   useStartButtonMatrixValidation(matrix1Pos, matrix2Pos)
-
-  useEffect(() => {
-    if (started === true) {
-      const animateStartButton = async () => {
-        await animate(
-          startButtonScope.current,
-          { opacity: 0 },
-          { duration: 0.5, ease: "easeInOut" }
-        );
-        startButtonScope.current.disabled = true;
-        startButtonScope.current.
-          classList.add("invisible");
-      };
-      const matrix1 = getMatrixArray('matrix1')
-      const matrix2 = getMatrixArray('matrix2')
-      animateStartButton();
-      console.log(standardMultiplication(matrix1, matrix2))
-    }
-  });
-
-
+  const startButtonScope = useStartButtonAnimation(started)
 
   return (
     <button
