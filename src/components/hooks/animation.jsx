@@ -1,12 +1,13 @@
 import { useAnimate } from "motion/react";
-import { useEffect } from "react";
-import { getMatrixArray } from "../../utils/array";
+import { useEffect, useRef, useState } from "react";
+import { getMatrixArray, getMatrixArrayAttributesAndContainer } from "../../utils/array";
 import { standardMultiplication } from "../../utils/multiplication";
 import { delayInMs } from "../../utils/time";
+import { createPortal } from "react-dom";
 
-export function useStartButtonAnimation(started){
+export function useStartButtonAnimation(started) {
   const [startButtonScope, animate] = useAnimate(null);
-  
+
   useEffect(() => {
     if (started === true) {
       const animateStartButton = async () => {
@@ -19,10 +20,7 @@ export function useStartButtonAnimation(started){
         startButtonScope.current.
           classList.add("invisible");
       };
-      const matrix1 = getMatrixArray('matrix1')
-      const matrix2 = getMatrixArray('matrix2')
       animateStartButton();
-      console.log(standardMultiplication(matrix1, matrix2))
     }
   });
   return startButtonScope
@@ -30,12 +28,23 @@ export function useStartButtonAnimation(started){
 }
 
 
-export function useStandardMatrixAnimation(started,multMatrixScope){
+export function useStandardMatrixAnimation(started, multMatrixScope) {
   const [outputMatrixScope, animateOutput] = useAnimate(null)
+  const [matrixPositioned,setMatrixPositioned] = useState(false)
+  const invisibleSpanRef = useRef([])
+  function animateMatrixNumbers(result, steps) {
+    console.log(steps)
+    const matrix1 = document.getElementById('matrix1')
+    const matrix2 = document.getElementById('matrix2')
+    const NumberSpan = () => {
+      return createPortal(<span className="relative left-0 top-0 leading-none 
+            aspect-square w-[50px] text-center bg-red-200"></span>)
+    }
 
+  }
 
   useEffect(() => {
-    if (started === true) {
+    if (started === true && matrixPositioned === false) {
       const fadeOutOutputMatrix = async () => {
 
         await delayInMs(5000)
@@ -45,18 +54,34 @@ export function useStandardMatrixAnimation(started,multMatrixScope){
         outputMatrixScope.current.style.left = `${outputMatrixPositionWithMargin}px`
         outputMatrixScope.current.style.top = `${multMatrixesOffset.top}px`
         await animateOutput(outputMatrixScope.current, { opacity: 1 }, { duration: 1, ease: 'easeInOut' })
+        const matrix1 = getMatrixArray('matrix1')
+        const matrix2 = getMatrixArray('matrix2')
+        const matrix1AttributeAndContainer = getMatrixArrayAttributesAndContainer('matrix1')
+        const matrix2AttributeAndContainer = getMatrixArrayAttributesAndContainer('matrix2')
+        matrix1AttributeAndContainer.forEach((attribute)=>{
+          invisibleSpanRef.current.push({data:attribute})
+        })
+        matrix2AttributeAndContainer.forEach((attribute)=>{
+          invisibleSpanRef.current.push({data:attribute})
+        })
+        console.log(invisibleSpanRef.current )
+        setMatrixPositioned(true)
+        const { result, steps } = standardMultiplication(matrix1, matrix2)
+        animateMatrixNumbers(result,steps)
       }
       fadeOutOutputMatrix()
 
-    } 
-  }, [started, animateOutput, outputMatrixScope, multMatrixScope]);
+    }else if(matrixPositioned === true){
+
+    }
+  }, [started, animateOutput, outputMatrixScope, multMatrixScope,matrixPositioned]);
 
 
-  return({outputMatrixScope})
+  return ({ outputMatrixScope,invisibleSpanRef })
 
 }
 
-export function useHeaderAnimation(started){
+export function useHeaderAnimation(started) {
   const [multMatrixScope, animate] = useAnimate(null);
   useEffect(() => {
     if (started === true) {

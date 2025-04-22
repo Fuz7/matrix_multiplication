@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DimensionInput from "./DimensionInput";
 import Matrix from "./Matrix";
 import multiplicationSymbol from "@images/multiplicationSymbol.svg";
 import { useStartedStore } from "../../utils/store";
-import { useAnimate } from "motion/react";
 import equalSymbol from '@images/equalSymbol.svg'
-import { delayInMs } from "../../utils/time";
-import { standardMultiplication } from "../../utils/multiplication";
-import { getMatrixArray } from "../../utils/array";
 import { useStartButtonMatrixValidation } from "../hooks/validation";
 import { useHeaderAnimation, useStandardMatrixAnimation, useStartButtonAnimation } from "../hooks/animation";
+import { createPortal } from "react-dom";
+import { InvisibleSpan } from "./Animation";
 
 
 export default function Main() {
@@ -17,7 +15,7 @@ export default function Main() {
   const [matrix2Pos, setMatrix2Pos] = useState({ row: "2", col: "3" });
   const started = useStartedStore((state) => state.started);
   const multMatrixScope = useHeaderAnimation(started)
-  const {outputMatrixScope} = useStandardMatrixAnimation(started,multMatrixScope)
+  const {outputMatrixScope,invisibleSpanRef} = useStandardMatrixAnimation(started,multMatrixScope)
 
 
   return (
@@ -55,6 +53,12 @@ export default function Main() {
         </div>
 
       </div>
+    {invisibleSpanRef.current.map((spanInfo)=>{
+      return(createPortal(
+        <InvisibleSpan  {...spanInfo.data.attribute} />,
+        spanInfo.data.parent
+      ))
+    })}
     </main>
   );
 }

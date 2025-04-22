@@ -92,6 +92,10 @@ function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
     >
       {inputsArray.map((matrixPos, index) => {
         return (
+          <div
+            key={"container" + index}
+           className="inputContainer relative">
+          
           <input
             disabled={started || matrixOutput}
             onInput={(e) => {
@@ -110,6 +114,7 @@ function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
             value={inputsData[index] ?? ''}
             key={"matrix" + index} className={`bg-matrixInputBackground  leading-none
           w-[50px] aspect-square text-center ${!matrixOutput&&'matrixInput'} `}></input>
+          </div>
         )
       })}
     </div>

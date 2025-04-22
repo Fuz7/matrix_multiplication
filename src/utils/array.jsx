@@ -12,3 +12,16 @@ export function getMatrixArray(id) {
   }
   return(matrixArray)
 }
+
+export function getMatrixArrayAttributesAndContainer(id){
+  const matrix = document.getElementById(id)
+  const matrixInputContainers = Array.from(matrix.getElementsByClassName('inputContainer'))
+  const matrixAttributes = matrixInputContainers.map((inputContainer)=>{
+    const input = inputContainer.getElementsByTagName('input')[0]
+    const dataCol = input.getAttribute('data-col')
+    const dataRow = input.getAttribute('data-row')
+    const value = input.value
+    return {attribute:{dataCol,dataRow,value},parent:inputContainer}
+  })
+  return matrixAttributes
+}
