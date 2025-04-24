@@ -7,3 +7,7 @@
   border-color: red;
   border-radius: 4px;
 }
+
+body{
+  position: relative;
+}
