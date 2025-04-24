@@ -7,7 +7,6 @@ import { motion, useAnimate } from 'motion/react';
 export default function Header() {
 
 
-
   return (
     <header className="flex flex-col px-[60px]">
       <div className="flex justify-between">

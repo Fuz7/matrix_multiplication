@@ -45,6 +45,16 @@ export function useStandardMatrixAnimation(started, multMatrixScope) {
 
   useEffect(() => {
     if (started === true && matrixPositioned === false) {
+      function makeInvisibleSpanRef(){
+        const matrix1AttributeAndContainer = getMatrixArrayAttributesAndContainer('matrix1')
+        const matrix2AttributeAndContainer = getMatrixArrayAttributesAndContainer('matrix2')
+        matrix1AttributeAndContainer.forEach((attribute)=>{
+          invisibleSpanRef.current.push({data:attribute})
+        })
+        matrix2AttributeAndContainer.forEach((attribute)=>{
+          invisibleSpanRef.current.push({data:attribute})
+        })
+      }
       const fadeOutOutputMatrix = async () => {
 
         await delayInMs(5000)
@@ -54,17 +64,10 @@ export function useStandardMatrixAnimation(started, multMatrixScope) {
         outputMatrixScope.current.style.left = `${outputMatrixPositionWithMargin}px`
         outputMatrixScope.current.style.top = `${multMatrixesOffset.top}px`
         await animateOutput(outputMatrixScope.current, { opacity: 1 }, { duration: 1, ease: 'easeInOut' })
+        console.log(invisibleSpanRef.current )
         const matrix1 = getMatrixArray('matrix1')
         const matrix2 = getMatrixArray('matrix2')
-        const matrix1AttributeAndContainer = getMatrixArrayAttributesAndContainer('matrix1')
-        const matrix2AttributeAndContainer = getMatrixArrayAttributesAndContainer('matrix2')
-        matrix1AttributeAndContainer.forEach((attribute)=>{
-          invisibleSpanRef.current.push({data:attribute})
-        })
-        matrix2AttributeAndContainer.forEach((attribute)=>{
-          invisibleSpanRef.current.push({data:attribute})
-        })
-        console.log(invisibleSpanRef.current )
+        makeInvisibleSpanRef()
         setMatrixPositioned(true)
         const { result, steps } = standardMultiplication(matrix1, matrix2)
         animateMatrixNumbers(result,steps)
@@ -77,7 +80,7 @@ export function useStandardMatrixAnimation(started, multMatrixScope) {
   }, [started, animateOutput, outputMatrixScope, multMatrixScope,matrixPositioned]);
 
 
-  return ({ outputMatrixScope,invisibleSpanRef })
+  return ({ outputMatrixScope,invisibleSpanRef,matrixPositioned })
 
 }
 

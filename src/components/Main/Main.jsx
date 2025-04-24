@@ -7,7 +7,7 @@ import equalSymbol from '@images/equalSymbol.svg'
 import { useStartButtonMatrixValidation } from "../hooks/validation";
 import { useHeaderAnimation, useStandardMatrixAnimation, useStartButtonAnimation } from "../hooks/animation";
 import { createPortal } from "react-dom";
-import { InvisibleSpan } from "./Animation";
+import { InvisibleMatrixInputSpan, InvisibleProductSpan } from "./Animation";
 
 
 export default function Main() {
@@ -15,8 +15,8 @@ export default function Main() {
   const [matrix2Pos, setMatrix2Pos] = useState({ row: "2", col: "3" });
   const started = useStartedStore((state) => state.started);
   const multMatrixScope = useHeaderAnimation(started)
-  const {outputMatrixScope,invisibleSpanRef} = useStandardMatrixAnimation(started,multMatrixScope)
-
+  const {outputMatrixScope,invisibleSpanRef,matrixPositioned} = useStandardMatrixAnimation(started,multMatrixScope)
+  const invisibleProducts = Array.from({length:Number.parseInt(matrix1Pos.col)},(_,i) => i + 1)
 
   return (
     <main className="flex flex-col items-center gap-[45px]">
@@ -55,10 +55,17 @@ export default function Main() {
       </div>
     {invisibleSpanRef.current.map((spanInfo)=>{
       return(createPortal(
-        <InvisibleSpan  {...spanInfo.data.attribute} />,
+        <InvisibleMatrixInputSpan  {...spanInfo.data.attribute} />,
         spanInfo.data.parent
       ))
     })}
+    {matrixPositioned && invisibleProducts.map((order)=>{
+      return(createPortal(
+        <InvisibleProductSpan order={order} />,
+        document.body
+      )
+    )
+    })} 
     </main>
   );
 }

@@ -1,4 +1,4 @@
-export function InvisibleSpan({dataCol,dataRow,value}){
+export function InvisibleMatrixInputSpan({dataCol,dataRow,value}){
   return (
     <span 
     data-col={dataCol}
@@ -6,4 +6,14 @@ export function InvisibleSpan({dataCol,dataRow,value}){
     className="absolute top-0 left-0 w-[50px] aspect-square
     flex justify-center items-center leading-none">{value}</span>
   )
+}
+
+export function InvisibleProductSpan({order}){
+  return (
+    <span
+    data-order = {order}
+    >
+
+    </span>
+  )  
 }
