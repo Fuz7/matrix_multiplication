@@ -12,7 +12,7 @@ import {
   useStartButtonAnimation,
 } from "../hooks/animation";
 import { createPortal } from "react-dom";
-import { InvisibleMatrixInputSpan, InvisibleProductSpan } from "./Animation";
+import { InvisibleMatrixInputSpan, InvisiblePlusSign, InvisibleProductSpan } from "./Animation";
 
 export default function Main() {
   const [matrix1Pos, setMatrix1Pos] = useState({ row: "3", col: "2" });
@@ -23,6 +23,10 @@ export default function Main() {
     useStandardMatrixAnimation(started, multMatrixScope, animateMult);
   const invisibleProducts = Array.from(
     { length: Number.parseInt(matrix1Pos.col) },
+    (_, i) => i + 1,
+  );
+  const invisiblePlusSign = Array.from(
+    { length: Number.parseInt(matrix1Pos.col - 1) },
     (_, i) => i + 1,
   );
 
@@ -51,7 +55,11 @@ export default function Main() {
           />
           <div
              id="animatingMultSymbol"
-           className="w-[50px] aspect-square absolute top-[-200px] left-1/2 -translate-x-1/2
+             style={{
+              top: `-${160 + (Number.parseInt(matrix1Pos.row) * 20)}px`
+             }}
+           className="w-[50px] aspect-square absolute 
+            left-1/2 -translate-x-1/2 origin-center
            flex justify-center items-center opacity-0">
           <img
             className="w-[16px]"
@@ -84,6 +92,7 @@ export default function Main() {
           <Matrix
             row={matrix1Pos.row}
             column={matrix2Pos.col}
+            id={"outputMatrix"}
             matrixOutput={true}
           ></Matrix>
         </div>
@@ -101,6 +110,14 @@ export default function Main() {
             document.body,
           );
         })}
+      {matrixPositioned && 
+        invisiblePlusSign.map((order)=>{
+          return createPortal(
+            <InvisiblePlusSign order={order} />,
+            document.body
+          )
+        })
+      }
     </main>
   );
 }

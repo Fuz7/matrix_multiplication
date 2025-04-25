@@ -37,18 +37,20 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
   const animateMatrixNumbers = useCallback(async(result, steps) => {
     const matrix1 = document.getElementById("matrix1");
     const matrix2 = document.getElementById("matrix2");
+    const outputMatrix = document.getElementById('outputMatrix')
     const animatingMultSymbol = document.getElementById('animatingMultSymbol')
     
     console.log(steps);
     let orderNumber = 1;
     for (const step of steps) {
+      await animateMult(animatingMultSymbol,{scale:1,opacity:0},{duration:0.001})
       if (step.type === "multiply") {
         const matrix1Span = getMatrixSpan(matrix1, step.a);
         const matrix2Span = getMatrixSpan(matrix2, step.b);
         const matrix1SpanDimension = matrix1Span.getBoundingClientRect()
         const matrix2SpanDimension = matrix2Span.getBoundingClientRect()
         const multSymbolDimension = animatingMultSymbol.getBoundingClientRect()
-        const order = document.querySelector(`div[data-order="${orderNumber}"]`)
+        const order = document.querySelector(`.product[data-order="${orderNumber}"]`)
         const orderSpan = order.getElementsByTagName('span')[0]
         const orderDimension = order.getBoundingClientRect()
         orderSpan.textContent = step.value
@@ -61,7 +63,7 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
         console.log(orderDimension)
         animate(order,{y:orderYPos},{duration:0.9,ease:'easeOut'})
         animate(order,{x:orderXPos,y:orderYPos},{duration:0.45,ease:'easeOut'})
-        // console.log(multSymbolDimension)
+        console.log(multSymbolDimension)
         // console.log(matrix1SpanDimension)
         animateMult(matrix1Span,{y:matrix1YPos},{duration:0.5})
         await animateMult(matrix2Span,{y:matrix2YPos},{duration:0.5})
@@ -72,8 +74,25 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
         animateMult(animatingMultSymbol,{opacity:0,scale:0},{duration:1})
         animateMult(matrix1Span,{x:matrix1XPos+45,scale:0,opacity:0},{duration:0.8,ease:'easeOut'})
         animateMult(matrix2Span,{x:matrix2XPos-45,scale:0,opacity:0},{duration:0.8,ease:'easeOut'})
-        animate(orderSpan,{scale:1},{duration:0.2,delay:0.6,ease:'easeOut'})
-        return
+        await animate(orderSpan,{scale:1},{duration:0.2,delay:0.6,ease:'easeOut'})
+        const outputMatrixDimension = outputMatrix.getBoundingClientRect()
+        const orderXPos2 = (outputMatrixDimension.x 
+          + (outputMatrixDimension.width /2)) - (orderDimension.x + (orderDimension.width / 2))
+        if(orderNumber === 1){
+          animate(order,{x:orderXPos2},{duration:1})
+        }
+        
+        if(orderNumber === 2){
+          
+          const orderPlus = document.querySelector(`.plus[data-order="${orderNumber - 1}"]`)
+          const orderPlusDimension = orderPlus.getBoundingClientRect()
+          
+
+        }
+
+        if(orderNumber === 2) return
+        orderNumber += 1
+        
       }
       if(step.type === 'add'){
 
