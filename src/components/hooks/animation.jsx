@@ -7,7 +7,7 @@ import {
 import { standardMultiplication } from "../../utils/multiplication";
 import { delayInMs } from "../../utils/time";
 import { createPortal } from "react-dom";
-import { getMatrixSpan } from "../../utils/element";
+import { getMatrixSpan, setTranslate } from "../../utils/element";
 import { animate } from "motion";
 
 export function useStartButtonAnimation(started) {
@@ -61,8 +61,7 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
         const orderXPos = multSymbolDimension.x - orderDimension.x
         const orderYPos = multSymbolDimension.y - orderDimension.y
         console.log(orderDimension)
-        animate(order,{y:orderYPos},{duration:0.9,ease:'easeOut'})
-        animate(order,{x:orderXPos,y:orderYPos},{duration:0.45,ease:'easeOut'})
+        setTranslate(order,orderXPos,orderYPos)
         console.log(multSymbolDimension)
         // console.log(matrix1SpanDimension)
         animateMult(matrix1Span,{y:matrix1YPos},{duration:0.5})
@@ -76,21 +75,43 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
         animateMult(matrix2Span,{x:matrix2XPos-45,scale:0,opacity:0},{duration:0.8,ease:'easeOut'})
         await animate(orderSpan,{scale:1},{duration:0.2,delay:0.6,ease:'easeOut'})
         const outputMatrixDimension = outputMatrix.getBoundingClientRect()
-        const orderXPos2 = (outputMatrixDimension.x 
-          + (outputMatrixDimension.width /2)) - (orderDimension.x + (orderDimension.width / 2))
+        const outputMatrixCenterPos = outputMatrixDimension.x + (outputMatrixDimension.width/2)
         if(orderNumber === 1){
-          animate(order,{x:orderXPos2},{duration:1})
+          const orderXPos2 = outputMatrixCenterPos - (orderDimension.x + (orderDimension.width / 2))
+          animate(order,{x:orderXPos2,y:orderYPos},{duration:1})
         }
         
-        if(orderNumber === 2){
+        if(orderNumber >= 2){
+          const gap = 15
+          const plusWidth = 16
+          const spanWidth = 30
+          const sumWidth = (spanWidth * orderNumber) + (gap * orderNumber) + plusWidth * orderNumber
+          const startX = outputMatrixCenterPos
+          - (sumWidth/2)
+          for(let i = 1;i <= orderNumber -1;i++){
+            const previousProduct = document.querySelector(`.product[data-order="${i}"]`)
+            const addedXPos = (i - 1) * ((gap * 2) + spanWidth + plusWidth)
+            animate(previousProduct,{x:(startX + addedXPos)},{duration:1})
+          }
+          for(let i = 1;i <= orderNumber - 2; i++){
+            const previousPlus = document.querySelector(`.plus[data-order="${i}"]`)
+            const addedPlusXPos =  i * (spanWidth + gap) + ((i-1) * (gap + plusWidth))
+            animate(previousPlus,{x:startX + addedPlusXPos},{duration:1})
           
+          }
           const orderPlus = document.querySelector(`.plus[data-order="${orderNumber - 1}"]`)
-          const orderPlusDimension = orderPlus.getBoundingClientRect()
-          
-
+          const orderPlusXPos = startX + ((orderNumber-1) * (spanWidth + gap)) +
+          ((orderNumber - 2)  * (gap + plusWidth))
+        
+          setTranslate(orderPlus,orderPlusXPos,orderYPos + 8)
+          animate(orderPlus,{opacity:1,scale:[0,1],
+            x:orderPlusXPos,y:orderYPos + 8},{duration:0.5,delay:1})
+          await animate(order,{x:orderXPos,y:orderYPos - 100},{duration:0.5})
+          const orderXPos2 = startX + (orderNumber - 1) * ((gap*2) + spanWidth + plusWidth)
+          await animate(order,{x:orderXPos2,y:orderYPos - 100},{duration:0.5})
+          animate(order,{x:orderXPos2,y:orderYPos},{duration:0.5})
         }
 
-        if(orderNumber === 2) return
         orderNumber += 1
         
       }
