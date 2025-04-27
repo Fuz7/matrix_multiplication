@@ -6,7 +6,6 @@ import {
 } from "../../utils/array";
 import { standardMultiplication } from "../../utils/multiplication";
 import { delayInMs, getSpeed } from "../../utils/time";
-import { createPortal } from "react-dom";
 import { getMatrixSpan, setTranslate } from "../../utils/element";
 import { animate } from "motion";
 
