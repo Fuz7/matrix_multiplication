@@ -59,7 +59,7 @@ export default function Main() {
               top: `-${160 + (Number.parseInt(matrix1Pos.row) * 20)}px`
              }}
            className="w-[50px] aspect-square absolute 
-            left-1/2 -translate-x-1/2 origin-center
+            left-1/2 -translate-x-1/2 origin-center pb-[4px]
            flex justify-center items-center opacity-0">
           <img
             className="w-[16px]"

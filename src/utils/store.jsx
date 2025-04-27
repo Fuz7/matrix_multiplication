@@ -21,6 +21,13 @@ export const useMultiplicationType = create((set)=>{
     }
 })
 
+export const useFastForwardSpeed = create((set)=>{
+    return{
+        fastForwardSpeed:1,
+        setFastForwardSpeed:((speed)=>set({fastForwardSpeed:speed}))
+    }
+})
+
 // export const useMatrix1DimensionStore = create((set)=>{
 //     return{
 //         columnSize: '',

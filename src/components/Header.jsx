@@ -1,12 +1,15 @@
 /* eslint-disable no-unused-vars */
-import smallBracket from '@images/smallBracket.svg'
-import { useMatrixSizeStore, useMultiplicationType, useStartedStore } from '../utils/store';
-import { useEffect, useRef } from 'react';
-import { motion, useAnimate } from 'motion/react';
+import smallBracket from "@images/smallBracket.svg";
+import {
+  useFastForwardSpeed,
+  useMatrixSizeStore,
+  useMultiplicationType,
+  useStartedStore,
+} from "../utils/store";
+import { useEffect, useRef } from "react";
+import { motion, useAnimate } from "motion/react";
 
 export default function Header() {
-
-
   return (
     <header className="flex flex-col px-[60px]">
       <div className="flex justify-between">
@@ -19,35 +22,45 @@ export default function Header() {
 }
 function MatrixSizeSection() {
   const { matrixSize, setMatrixSize } = useMatrixSizeStore((state) => state);
-  const started = useStartedStore((state) => state.started)
-  const [sizeScope, animate] = useAnimate(null)
+  const started = useStartedStore((state) => state.started);
+  const [sizeScope, animate] = useAnimate(null);
 
   useEffect(() => {
     if (started === true) {
-      animate(sizeScope.current, { y: -150 }, { duration: 1, ease: 'easeInOut' })
+      animate(
+        sizeScope.current,
+        { y: -150 },
+        { duration: 1, ease: "easeInOut" },
+      );
     }
-  }, [started, animate, sizeScope])
-
-
+  }, [started, animate, sizeScope]);
 
   function SizeButton({ text }) {
-    return <div
-      onClick={() => {
-        matrixSize !== text && setMatrixSize(text);
-      }}
-      className={`h-[50px] w-[150px] tracking-[-0.05em]
-        ${matrixSize === text ? 'bg-white text-mainBlack' :
-          'text-white border-white border-solid border cursor-pointer'}
-           flex justify-center items-center
+    return (
+      <div
+        onClick={() => {
+          matrixSize !== text && setMatrixSize(text);
+        }}
+        className={`h-[50px] w-[150px] tracking-[-0.05em]
+        ${
+          matrixSize === text
+            ? "text-mainBlack bg-white"
+            : "cursor-pointer border border-solid border-white text-white"
+        }
+           flex items-center justify-center
         text-[40px]`}
-    >
-      {text.toUpperCase()}
-    </div>;
+      >
+        {text.toUpperCase()}
+      </div>
+    );
   }
 
   return (
-    <div id='matrixSizeHeader'
-      ref={sizeScope} className="flex flex-col mt-[40px] gap-[5px] ">
+    <div
+      id="matrixSizeHeader"
+      ref={sizeScope}
+      className="mt-[40px] flex flex-col gap-[5px] "
+    >
       <h3 className="text-[30px] tracking-[-0.03em]">MATRIXES</h3>
       <div className="flex gap-[33px]">
         <SizeButton text={"small"} />
@@ -57,54 +70,34 @@ function MatrixSizeSection() {
   );
 }
 
-
-
 function FastForwardSection() {
-
-  const started = useStartedStore((state) => state.started)
-  const [fastForwardScope, animate] = useAnimate(null)
+  const started = useStartedStore((state) => state.started);
+  const [fastForwardScope, animate] = useAnimate(null);
 
   useEffect(() => {
     if (started === true) {
-      animate(fastForwardScope.current, { y: 100 }, { duration: 0.7, ease: 'easeInOut', delay: 4, })
+      animate(
+        fastForwardScope.current,
+        { y: 105 },
+        { duration: 0.7, ease: "easeInOut", delay: 4 },
+      );
     }
-  }, [started, animate, fastForwardScope])
+  }, [started, animate, fastForwardScope]);
 
   return (
-    <motion.div ref={fastForwardScope} className={`flex gap-[40px] mt-[50px] -translate-y-[100px]`}>
+    <motion.div
+      ref={fastForwardScope}
+      className={`mt-[50px] flex -translate-y-[105px] gap-[40px]`}
+    >
       <div className="flex gap-[10px] text-white">
-        <button
-          className="flex flex-col justify-center items-center
-            text-white border border-solid border-white tracking-[-0.1em]
-            w-[70px] h-[50px] text-[40px] cursor-pointer"
-        >
-          2x
-        </button>
-        <button
-          className="flex flex-col justify-center items-center
-            text-white border border-solid border-white tracking-[-0.1em]
-            w-[70px] h-[50px] text-[40px] cursor-pointer"
-        >
-          4x
-        </button>
-        <button
-          className="flex flex-col justify-center items-center
-            text-white border border-solid border-white tracking-[-0.1em]
-            w-[70px] h-[50px] text-[40px] cursor-pointer"
-        >
-          8x
-        </button>
-        <button
-          className="flex flex-col justify-center items-center
-            text-white border border-solid border-white tracking-[-0.1em]
-            w-[70px] h-[50px] text-[40px] cursor-pointer"
-        >
-          16x
-        </button>
+        <FastForwardButton speed={2} />
+        <FastForwardButton speed={4} />
+        <FastForwardButton speed={8} />
+        <FastForwardButton speed={16} />
       </div>
       <button
-        className="flex flex-col justify-center items-center
-          h-[50px] w-[120px] border border-solid border-white text-[40px]
+        className="flex h-[50px] w-[120px] flex-col
+          items-center justify-center border border-solid border-white text-[40px]
           tracking-[-0.1em]"
       >
         SKIP
@@ -114,72 +107,116 @@ function FastForwardSection() {
 }
 
 function MultiplicationType() {
-
-  const { multiplicationType, setMultiplicationType } =
-    useMultiplicationType((state) => state)
-  const started = useStartedStore((state) => state.started)
-  const [typeScope, animate] = useAnimate(null)
+  const { multiplicationType, setMultiplicationType } = useMultiplicationType(
+    (state) => state,
+  );
+  const started = useStartedStore((state) => state.started);
+  const [typeScope, animate] = useAnimate(null);
 
   useEffect(() => {
     if (started === true) {
       const typeHeaderAnimation = async () => {
-        const matrixSizeElement = document.getElementById('matrixSizeHeader')
-        const matrixSizeXOffset = matrixSizeElement.getBoundingClientRect().left;
-        const standardButtonElement = document.getElementById('standardButtonHeader')
-        const standardButtonXOffset = standardButtonElement.getBoundingClientRect().left;
-        await animate(typeScope.current, { x: matrixSizeXOffset - standardButtonXOffset },
-          { delay: 1, duration: 1, ease: 'easeInOut' })
-        await animate(typeScope.current, { y: -100 },
-          { duration: 1, ease: 'easeInOut' })
-        await animate('.strassenType', { y: -100 },
-          { duration: 0.8, ease: 'easeInOut' })
-        animate('.typeUnderline', { opacity: 0 }, { duration: 0.5, ease: 'easeInOut' })
-      }
-      typeHeaderAnimation()
+        const matrixSizeElement = document.getElementById("matrixSizeHeader");
+        const matrixSizeXOffset =
+          matrixSizeElement.getBoundingClientRect().left;
+        const standardButtonElement = document.getElementById(
+          "standardButtonHeader",
+        );
+        const standardButtonXOffset =
+          standardButtonElement.getBoundingClientRect().left;
+        await animate(
+          typeScope.current,
+          { x: matrixSizeXOffset - standardButtonXOffset },
+          { delay: 1, duration: 1, ease: "easeInOut" },
+        );
+        await animate(
+          typeScope.current,
+          { y: -100 },
+          { duration: 1, ease: "easeInOut" },
+        );
+        await animate(
+          ".strassenType",
+          { y: -100 },
+          { duration: 0.8, ease: "easeInOut" },
+        );
+        animate(
+          ".typeUnderline",
+          { opacity: 0 },
+          { duration: 0.5, ease: "easeInOut" },
+        );
+      };
+      typeHeaderAnimation();
     }
+  }, [typeScope, animate, started]);
 
-  }, [typeScope, animate, started])
-
-
-  return (<div
-    ref={typeScope}
-    className='flex gap-[90px] justify-center'>
-    <div
-      onClick={() => {
-        if (multiplicationType !== 'standard') {
-          setMultiplicationType('standard')
-        }
-      }}
-      id='standardButtonHeader'
-      className={`flex items-center gap-[20px] standardType
-          ${multiplicationType === 'standard' ? 'cursor-default' : 'cursor-pointer'} 
-      `}>
-      <img src={smallBracket} alt="" />
-      <h3 className='text-[60px] tracking-[-0.05em] relative'>STANDARD
-        <span className={`absolute bottom-0 left-[6px] w-[96%] h-[2px] bg-white
-          typeUnderline
-          ${multiplicationType === 'standard' ? 'visible' : 'invisible'} 
+  return (
+    <div ref={typeScope} className="flex justify-center  gap-[90px]">
+      <div
+        onClick={() => {
+          if (multiplicationType !== "standard") {
+            setMultiplicationType("standard");
+          }
+        }}
+        id="standardButtonHeader"
+        className={`standardType flex items-center gap-[20px]
+          ${multiplicationType === "standard" ? "cursor-default" : "cursor-pointer"} 
+      `}
+      >
+        <img src={smallBracket} alt="" />
+        <h3 className="relative text-[60px] tracking-[-0.05em]">
+          STANDARD
+          <span
+            className={`typeUnderline absolute bottom-0 left-[6px] h-[2px] w-[96%]
+          bg-white
+          ${multiplicationType === "standard" ? "visible" : "invisible"} 
           `}
-        ></span>
-      </h3>
-      <img className='rotate-180' src={smallBracket} alt="" />
+          ></span>
+        </h3>
+        <img className="rotate-180" src={smallBracket} alt="" />
+      </div>
+      <div
+        onClick={() => {}}
+        className={`strassenType flex items-center gap-[20px]
+          ${multiplicationType === "strassen" ? "cursor-default" : "cursor-pointer"} 
+      
+      `}
+      >
+        <img src={smallBracket} alt="" />
+        <h3 className="relative text-[60px] tracking-[-0.05em]">
+          STRASSEN
+          <span
+            className={`typeUnderline absolute bottom-0 left-[6px] h-[2px] w-[96%]
+        bg-white
+          ${multiplicationType === "strassen" ? "visible" : "invisible"} 
+           `}
+          ></span>
+        </h3>
+        <img className="rotate-180" src={smallBracket} alt="" />
+      </div>
     </div>
-    <div
-      onClick={() => {
+  );
+}
+
+function FastForwardButton({speed}) {
+  const {fastForwardSpeed,setFastForwardSpeed} = useFastForwardSpeed((state)=>state)
+  
+  return (
+    <button
+      onClick={()=>{
+        if(speed === fastForwardSpeed){
+          setFastForwardSpeed(1)
+          return
+        }
+        setFastForwardSpeed(speed)
 
       }}
-      className={`flex items-center gap-[20px] strassenType
-          ${multiplicationType === 'strassen' ? 'cursor-default' : 'cursor-pointer'} 
-      
-      `}>
-      <img src={smallBracket} alt="" />
-      <h3 className='text-[60px] tracking-[-0.05em] relative'>STRASSEN
-        <span className={`absolute bottom-0 left-[6px] w-[96%] h-[2px] bg-white
-        typeUnderline
-          ${multiplicationType === 'strassen' ? 'visible' : 'invisible'} 
-           `}></span>
-      </h3>
-      <img className='rotate-180' src={smallBracket} alt="" />
-    </div>
-  </div>);
+      className={`flex h-[50px] w-[70px] cursor-pointer
+            flex-col items-center justify-center 
+            ${speed === fastForwardSpeed?'bg-white text-black':
+              'border border-solid border-white text-white'}
+             text-[40px] tracking-[-0.1em] `}
+    >
+      {speed}x
+    </button>
+  );
 }
