@@ -128,7 +128,7 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
         invisibleSumSpan.textContent = step.value
         await animate(invisibleSum,{x:[invisibleSumXPos,invisibleSumXPos],
           y:[invisibleSumYPos,invisibleSumYPos]},{duration:0.001})
-        console.log(previousProduct)
+        console.log(invisibleSum)
         await delayInMs(1000)
           for(let i = 1;i <= orderNumber -1;i++){
             const previousProduct = document.querySelector(`.product[data-order="${i}"]`)
@@ -145,10 +145,10 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
         const matrixInputDimension = matrixInput.getBoundingClientRect()
         const invisibleSumXPos2 = matrixInputDimension.x - invisibleSumXPos
         const invisibleSumYPos2 = matrixInputDimension.y - invisibleSumYPos
-        await delayInMs(1)
+        await delayInMs(100)
         await animate(invisibleSum,
           {x:(invisibleSumXPos + invisibleSumXPos2),
-            y:(invisibleSumYPos + invisibleSumYPos2)},{duration:0.5})
+            y:(invisibleSumYPos + invisibleSumYPos2)},{duration:0.4})
         matrixInput.value = step.value
         for(let i = 1;i <= orderNumber -1;i++){
           const previousProduct = document.querySelector(`.product[data-order="${i}"]`)

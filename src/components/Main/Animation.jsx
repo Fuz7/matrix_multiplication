@@ -54,7 +54,8 @@ export function InvisibleSumSpan(){
       <span
         className="font-smt  aspect-square  text-center
     leading-none text-[30px] text-white transform-[scale(0)]
-    "
+    flex items-center justify-center
+    origin-center"
       ></span>
     </motion.div>
   )
