@@ -38,9 +38,13 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
     const matrix1 = document.getElementById("matrix1");
     const matrix2 = document.getElementById("matrix2");
     const outputMatrix = document.getElementById('outputMatrix')
+    const outputMatrixDimension = outputMatrix.getBoundingClientRect()
+    const outputMatrixCenterPos = outputMatrixDimension.x + (outputMatrixDimension.width/2)
     const animatingMultSymbol = document.getElementById('animatingMultSymbol')
     
     console.log(steps);
+    let x = 0
+    let y = 0
     let orderNumber = 1;
     for (const step of steps) {
       await animateMult(animatingMultSymbol,{scale:1,opacity:0},{duration:0.001})
@@ -52,17 +56,15 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
         const multSymbolDimension = animatingMultSymbol.getBoundingClientRect()
         const order = document.querySelector(`.product[data-order="${orderNumber}"]`)
         const orderSpan = order.getElementsByTagName('span')[0]
-        const orderDimension = order.getBoundingClientRect()
         orderSpan.textContent = step.value
+        const orderDimension = order.getBoundingClientRect()
         const matrix1XPos = multSymbolDimension.x - matrix1SpanDimension.x - 35
         const matrix1YPos = multSymbolDimension.y - matrix1SpanDimension.y
         const matrix2XPos = multSymbolDimension.x - matrix2SpanDimension.x + 35 
         const matrix2YPos = multSymbolDimension.y - matrix2SpanDimension.y
-        const orderXPos = multSymbolDimension.x - orderDimension.x
-        const orderYPos = multSymbolDimension.y - orderDimension.y
-        console.log(orderDimension)
-        setTranslate(order,orderXPos,orderYPos)
-        console.log(multSymbolDimension)
+        const orderXPos = multSymbolDimension.x - orderDimension.x + 10
+        const orderYPos = multSymbolDimension.y - orderDimension.y + 10
+        await animate(order,{x:[orderXPos,orderXPos],y:[orderYPos,orderYPos]},{duration:0.001})
         // console.log(matrix1SpanDimension)
         animateMult(matrix1Span,{y:matrix1YPos},{duration:0.5})
         await animateMult(matrix2Span,{y:matrix2YPos},{duration:0.5})
@@ -74,8 +76,6 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
         animateMult(matrix1Span,{x:matrix1XPos+45,scale:0,opacity:0},{duration:0.8,ease:'easeOut'})
         animateMult(matrix2Span,{x:matrix2XPos-45,scale:0,opacity:0},{duration:0.8,ease:'easeOut'})
         await animate(orderSpan,{scale:1},{duration:0.2,delay:0.6,ease:'easeOut'})
-        const outputMatrixDimension = outputMatrix.getBoundingClientRect()
-        const outputMatrixCenterPos = outputMatrixDimension.x + (outputMatrixDimension.width/2)
         if(orderNumber === 1){
           const orderXPos2 = outputMatrixCenterPos - (orderDimension.x + (orderDimension.width / 2))
           animate(order,{x:orderXPos2,y:orderYPos},{duration:1})
@@ -111,12 +111,59 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
           await animate(order,{x:orderXPos2,y:orderYPos - 100},{duration:0.5})
           animate(order,{x:orderXPos2,y:orderYPos},{duration:0.5})
         }
-
+        
+        animateMult(matrix1Span,{x:[0,0],y:[0,0],scale:[1,1],opacity:[1,1]},{duration:0.001})
+        animateMult(matrix2Span,{x:[0,0],y:[0,0],scale:[1,1],opacity:[1,1]},{duration:0.001})
         orderNumber += 1
         
       }
       if(step.type === 'add'){
+        const invisibleSum = document.getElementById("invisibleSum")
+        const invisibleSumSpan = invisibleSum.getElementsByTagName('span')[0]
+        const invisibleSumDimension = invisibleSum.getBoundingClientRect()
+        const previousProduct = document.querySelector(`.product[data-order="1"]`)
+        const previousProductDimension = previousProduct.getBoundingClientRect()
+        const invisibleSumXPos = outputMatrixCenterPos - (invisibleSumDimension.width / 2) - 5
+        const invisibleSumYPos =  previousProductDimension.y - invisibleSumDimension.y - 15
+        invisibleSumSpan.textContent = step.value
+        await animate(invisibleSum,{x:[invisibleSumXPos,invisibleSumXPos],
+          y:[invisibleSumYPos,invisibleSumYPos]},{duration:0.001})
+        console.log(previousProduct)
+        await delayInMs(1000)
+          for(let i = 1;i <= orderNumber -1;i++){
+            const previousProduct = document.querySelector(`.product[data-order="${i}"]`)
+            const previousProductSpan = previousProduct.getElementsByTagName('span')[0]
+            animate(previousProductSpan,{scale:(0)},{duration:0.8,ease:'easeOut'})
+          }
+          for(let i = 1;i <= orderNumber - 2; i++){
+            const previousPlus = document.querySelector(`.plus[data-order="${i}"]`)
+            animate(previousPlus,{scale:0},{duration:0.8,ease:'easeOut'})
+          
+        }
+        await animate(invisibleSumSpan,{scale:1},{duration:0.4,delay:0.6})
+        const matrixInput = outputMatrix.querySelector(`input[data-row="${y}"][data-col="${x}"]`)
+        const matrixInputDimension = matrixInput.getBoundingClientRect()
+        const invisibleSumXPos2 = matrixInputDimension.x - invisibleSumXPos
+        const invisibleSumYPos2 = matrixInputDimension.y - invisibleSumYPos
+        await delayInMs(1)
+        await animate(invisibleSum,
+          {x:(invisibleSumXPos + invisibleSumXPos2),
+            y:(invisibleSumYPos + invisibleSumYPos2)},{duration:0.5})
+        matrixInput.value = step.value
+        for(let i = 1;i <= orderNumber -1;i++){
+          const previousProduct = document.querySelector(`.product[data-order="${i}"]`)
+          await animate(previousProduct,{x:[0,0],y:[0,0]},{duration:0.001})
 
+        }
+        await animate(invisibleSumSpan,{scale:[0,0]},{duration:0.001})
+        await animate(invisibleSum,
+          {x:[invisibleSumXPos,invisibleSumXPos],y:[0,0]},{duration:0.001})
+        
+
+        y = (Math.floor((x + 1) / 3)) + y
+        x = (1 + x) % 3
+
+        orderNumber = 1
       }
     }
   },[animateMult])

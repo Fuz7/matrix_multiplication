@@ -12,7 +12,7 @@ import {
   useStartButtonAnimation,
 } from "../hooks/animation";
 import { createPortal } from "react-dom";
-import { InvisibleMatrixInputSpan, InvisiblePlusSign, InvisibleProductSpan } from "./Animation";
+import { InvisibleMatrixInputSpan, InvisiblePlusSign, InvisibleProductSpan, InvisibleSumSpan } from "./Animation";
 
 export default function Main() {
   const [matrix1Pos, setMatrix1Pos] = useState({ row: "3", col: "2" });
@@ -117,6 +117,12 @@ export default function Main() {
             document.body
           )
         })
+      }
+      {matrixPositioned && 
+      createPortal(
+        <InvisibleSumSpan />,
+        document.body
+      )
       }
     </main>
   );
