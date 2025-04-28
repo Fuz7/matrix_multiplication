@@ -11,12 +11,16 @@ import {
   useStartButtonAnimation,
 } from "../hooks/animation";
 import { createPortal } from "react-dom";
-import { InvisibleMatrixInputSpan, InvisiblePlusSign, InvisibleProductSpan, InvisibleSumSpan } from "./Animation";
+import {
+  InvisibleMatrixInputSpan,
+  InvisiblePlusSign,
+  InvisibleProductSpan,
+  InvisibleSumSpan,
+} from "./Animation";
 
-export default function StandardMatrix({inputMatrixes}){
-  const {matrix1Pos,setMatrix1Pos,
-    matrix2Pos,setMatrix2Pos
-  } = inputMatrixes 
+export default function StandardMatrix({ inputMatrixes }) {
+  const { matrix1Pos, setMatrix1Pos, matrix2Pos, setMatrix2Pos } =
+    inputMatrixes;
   const started = useStartedStore((state) => state.started);
   const { multMatrixScope, animateMult } = useHeaderAnimation(started);
   const { outputMatrixScope, invisibleSpanRef, matrixPositioned } =
@@ -30,8 +34,8 @@ export default function StandardMatrix({inputMatrixes}){
     { length: Number.parseInt(matrix1Pos.col - 1) },
     (_, i) => i + 1,
   );
-  return(
-      <div className="min-w-[100%] flex flex-col items-center gap-[45px]">
+  return (
+    <div className="flex min-w-[100%] relative flex-col items-center gap-[45px]">
       <div
         ref={multMatrixScope}
         className="mt-[40px] flex items-center justify-center gap-[50px]"
@@ -54,18 +58,15 @@ export default function StandardMatrix({inputMatrixes}){
             alt=""
           />
           <div
-             id="animatingMultSymbol"
-             style={{
-              top: `-${160 + (Number.parseInt(matrix1Pos.row) * 20)}px`
-             }}
-           className="w-[50px] aspect-square absolute 
-            left-1/2 -translate-x-1/2 origin-center pb-[4px]
-           flex justify-center items-center opacity-0">
-          <img
-            className="w-[16px]"
-            src={animatingMultSymbol}
-            alt=""
-          />
+            id="animatingMultSymbol"
+            style={{
+              top: `-${160 + Number.parseInt(matrix1Pos.row) * 20}px`,
+            }}
+            className="absolute left-1/2 flex 
+            aspect-square w-[50px] origin-center -translate-x-1/2
+           items-center justify-center pb-[4px] opacity-0"
+          >
+            <img className="w-[16px]" src={animatingMultSymbol} alt="" />
           </div>
         </div>
         <div className="flex flex-col gap-[30px]">
@@ -110,24 +111,16 @@ export default function StandardMatrix({inputMatrixes}){
             document.body,
           );
         })}
-      {matrixPositioned && 
-        invisiblePlusSign.map((order)=>{
+      {matrixPositioned &&
+        invisiblePlusSign.map((order) => {
           return createPortal(
             <InvisiblePlusSign order={order} />,
-            document.body
-          )
-        })
-      }
-      {matrixPositioned && 
-      createPortal(
-        <InvisibleSumSpan />,
-        document.body
-      )
-      }
-
-      </div>
-
-  )
+            document.body,
+          );
+        })}
+      {matrixPositioned && createPortal(<InvisibleSumSpan />, document.body)}
+    </div>
+  );
 }
 
 function StartButton({ matrix1Pos, matrix2Pos }) {

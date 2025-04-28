@@ -8,6 +8,7 @@ import { standardMultiplication } from "../../utils/multiplication";
 import { delayInMs, getSpeed } from "../../utils/time";
 import { getMatrixSpan, setTranslate } from "../../utils/element";
 import { animate } from "motion";
+import { useIsResultButtonVisible } from "../../utils/store";
 
 export function useStartButtonAnimation(started) {
   const [startButtonScope, animate] = useAnimate(null);
@@ -30,6 +31,7 @@ export function useStartButtonAnimation(started) {
 }
 
 export function useStandardMatrixAnimation(started, multMatrixScope,animateMult) {
+  const setIsResultVisible = useIsResultButtonVisible((state)=>state.setIsResultVisible)
   const [outputMatrixScope, animateOutput] = useAnimate(null);
   const [matrixPositioned, setMatrixPositioned] = useState(false);
   const invisibleSpanRef = useRef([]);
@@ -166,7 +168,9 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
         orderNumber = 1
       }
     }
-  },[animateMult])
+    setIsResultVisible(true)
+
+  },[animateMult,setIsResultVisible])
   
   useEffect(() => {
     if (started === true && matrixPositioned === false) {
@@ -189,8 +193,9 @@ export function useStandardMatrixAnimation(started, multMatrixScope,animateMult)
         outputMatrixScope.current.classList.remove("invisible");
         const outputMatrixPositionWithMargin =
           multMatrixesOffset.left + multMatrixesOffset.width + 100;
+        
         outputMatrixScope.current.style.left = `${outputMatrixPositionWithMargin}px`;
-        outputMatrixScope.current.style.top = `${multMatrixesOffset.top}px`;
+        outputMatrixScope.current.style.top = `190px`;
         await animateOutput(
           outputMatrixScope.current,
           { opacity: 1 },

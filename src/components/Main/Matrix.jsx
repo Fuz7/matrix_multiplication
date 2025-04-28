@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import React,{ useEffect, useRef, useState } from "react"
 import { useStartedStore } from "../../utils/store"
 
 export default function Matrix({row,column,matrixOutput = false,id}) {
@@ -68,7 +68,7 @@ function RightBracket({ rowSize }) {
   )
 }
 
-function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
+const MatrixInputs = React.memo(function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
   const numberOfInputs = rowSize * colSize
   const [inputsData, setInputsData] = useState(Array.from({ length: numberOfInputs }, () => ''))
   const inputsArray = Array.from({ length: numberOfInputs }, (_,i) => {
@@ -119,4 +119,5 @@ function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
       })}
     </div>
   )
-}
+  
+})

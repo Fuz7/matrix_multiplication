@@ -1,21 +1,35 @@
 import { useState } from "react";
 import StandardMatrix from "./StandardMatrix";
 import Result from "./Result";
+import { motion } from "motion/react";
+import { useIsMultiplicationFinished } from "../../utils/store";
 
 export default function Main() {
   const [matrix1Pos, setMatrix1Pos] = useState({ row: "3", col: "2" });
   const [matrix2Pos, setMatrix2Pos] = useState({ row: "2", col: "3" });
+  const isMultiplicationFinished = useIsMultiplicationFinished((state)=>
+    state.isMultiplicationFinished)
+
   const inputMatrixes = {
     matrix1Pos,
     setMatrix1Pos,
     matrix2Pos,
     setMatrix2Pos,
   };
+
   
   return (
-    <main className="flex -translate-x-[100%]">
+    <motion.main
+    transition={{ease:'linear',duration:3}}
+    variants={
+      
+      {active:{x:'-100%'},initial:{x:0}}
+    }
+    initial="initial"
+    animate={isMultiplicationFinished ? 'active':'initial'}
+    className="flex ">
       <StandardMatrix inputMatrixes={inputMatrixes} />
       <Result row={matrix1Pos.row} col={matrix2Pos.col}/>
-    </main>
+    </motion.main>
   );
 }

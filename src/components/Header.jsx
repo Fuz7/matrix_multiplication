@@ -2,6 +2,7 @@
 import smallBracket from "@images/smallBracket.svg";
 import {
   useFastForwardSpeed,
+  useIsResultButtonVisible,
   useMatrixSizeStore,
   useMultiplicationType,
   useStartedStore,
@@ -14,12 +15,15 @@ export default function Header() {
     <header className="flex flex-col px-[60px]">
       <div className="flex justify-between">
         <MatrixSizeSection />
+        
         <FastForwardSection />
       </div>
       <MultiplicationType />
     </header>
   );
 }
+
+
 function MatrixSizeSection() {
   const { matrixSize, setMatrixSize } = useMatrixSizeStore((state) => state);
   const started = useStartedStore((state) => state.started);

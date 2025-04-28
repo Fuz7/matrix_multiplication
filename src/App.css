@@ -10,5 +10,5 @@
 
 body{
   position: relative;
-  overflow-x: clip;
+  overflow: clip;
 }
