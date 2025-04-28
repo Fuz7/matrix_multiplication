@@ -42,6 +42,21 @@ export const useIsMultiplicationFinished = create((set) => {
   };
 });
 
+export const useResultMatrixSize = create((set)=>{
+  return{
+    resultMatrixSize:"1x1",
+    setResultMatrixSize:(matrixSize)=>set({resultMatrixSize:matrixSize})
+  }
+})
+
+export const useResultExecutionTime = create((set)=>{
+  return{
+    resultExecutionTime:10.1,
+    setResultExecutionTime:(time)=>set({resultExecutionTime:time})
+  }
+})
+
+
 // export const useMatrix1DimensionStore = create((set)=>{
 //     return{
 //         columnSize: '',

@@ -3,9 +3,15 @@ import Matrix from "./Matrix";
 import {
   useIsMultiplicationFinished,
   useIsResultButtonVisible,
+  useResultExecutionTime,
+  useResultMatrixSize,
 } from "../../utils/store";
 
 export default function Result({ row, col }) {
+
+  const resultMatrixSize = useResultMatrixSize((state)=>state.resultMatrixSize)
+  const resultExecutionTime = useResultExecutionTime((state)=>state.resultExecutionTime)
+  
   return (
     <div className="flex min-w-[100%] gap-[150px] pt-[120px] pl-[300px]">
       <div className="h-fit">
@@ -27,7 +33,9 @@ export default function Result({ row, col }) {
               MATRIX SIZE:
             </h3>
             <div className="relative flex w-[190px] justify-end">
-              <div className="tracking-tight">3x3</div>
+              <div
+              id="resultMatrixSize"
+               className="tracking-tight">{resultMatrixSize}</div>
               <span className="absolute bottom-[-1px] h-[2px] w-full bg-white"></span>
             </div>
           </div>
@@ -36,7 +44,9 @@ export default function Result({ row, col }) {
               ALGORITHM EXECUTION TIME:
             </h3>
             <div className="relative flex w-[190px] items-end justify-end">
-              <div className="text-right tracking-tight">12.2 ms</div>
+              <div 
+              id="resultMatrixExecutionTime"
+              className="text-right tracking-tight">{resultExecutionTime}ms</div>
               <span className="absolute bottom-[-1px] h-[2px] w-full bg-white"></span>
             </div>
           </div>
@@ -48,8 +58,8 @@ export default function Result({ row, col }) {
 }
 
 function ResultButton() {
-  const isResultVisible = useIsResultButtonVisible(
-    (state) => state.isResultVisible,
+  const {isResultVisible,setIsResultVisible} = useIsResultButtonVisible(
+    (state) => state,
   );
   const setIsMultiplicationFinished = useIsMultiplicationFinished(
     (state) => state.setIsMultiplicationFinished,
@@ -57,7 +67,10 @@ function ResultButton() {
 
   return (
     <div
-      onClick={()=>setIsMultiplicationFinished(true)}
+      onClick={()=>{
+        setIsMultiplicationFinished(true)
+        setIsResultVisible(false)
+      }}
       className={`h-[74px] w-[250px] text-[64px] font-smt
         ${isResultVisible ? "visible" : "invisible"} fixed bottom-[50px] 
         left-1/2 flex -translate-x-1/2 cursor-pointer items-center justify-center
@@ -68,3 +81,4 @@ function ResultButton() {
     </div>
   );
 }
+

@@ -1,4 +1,6 @@
 export function standardMultiplication(A, B) {
+  const startTime = performance.now(); 
+
   const rowA = Number.parseInt(A.length)
   const colA = Number.parseInt(A[0].length)
   const rowB = Number.parseInt(B.length)
@@ -25,6 +27,8 @@ export function standardMultiplication(A, B) {
       steps.push({value:sum,type:'add'})
     }
   }
-
-  return {result:result,steps:steps}
+  const endTime = performance.now(); 
+  const rawRuntimeMs = endTime - startTime;
+  const runtimeMs = Number(rawRuntimeMs.toFixed(2));
+  return {result:result,steps:steps,runtimeMs:runtimeMs}
 }
