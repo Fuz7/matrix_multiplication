@@ -42,27 +42,37 @@ export const useIsMultiplicationFinished = create((set) => {
   };
 });
 
-export const useIsSkipped = create((set)=>{
-  return{
-    isSkipped:false,
-    setIsSkipped: (isSkipped)=> set({isSkipped:isSkipped})
-  }
-})
+export const useIsSkipped = create((set) => {
+  return {
+    isSkipped: false,
+    setIsSkipped: (isSkipped) => set({ isSkipped: isSkipped }),
+  };
+});
 
-export const useResultMatrixSize = create((set)=>{
-  return{
-    resultMatrixSize:"1x1",
-    setResultMatrixSize:(matrixSize)=>set({resultMatrixSize:matrixSize})
-  }
-})
+export const useResultMatrixSize = create((set) => {
+  return {
+    resultMatrixSize: "1x1",
+    setResultMatrixSize: (matrixSize) => set({ resultMatrixSize: matrixSize }),
+  };
+});
 
-export const useResultExecutionTime = create((set)=>{
-  return{
-    resultExecutionTime:10.1,
-    setResultExecutionTime:(time)=>set({resultExecutionTime:time})
-  }
-})
+export const useResultExecutionTime = create((set) => {
+  return {
+    resultExecutionTime: 10.1,
+    setResultExecutionTime: (time) => set({ resultExecutionTime: time }),
+  };
+});
 
+export const useStandardKey = create((set) => {
+  return {
+    standardKey: Math.random() * 10,
+    setStandardKey: (updater) =>
+      set((state) => ({
+        standardKey:
+          typeof updater === "function" ? updater(state.standardKey) : updater,
+      })),
+  };
+});
 
 // export const useMatrix1DimensionStore = create((set)=>{
 //     return{

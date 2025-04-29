@@ -38,6 +38,13 @@ function MatrixSizeSection() {
         { y: -150 },
         { duration: 1, ease: "easeInOut" },
       );
+    }else if(started === false){
+      animate(
+        sizeScope.current,
+        { y: 0 },
+        { duration: 1, delay:4, ease: "easeInOut" },
+      );
+      
     }
   }, [started, animate, sizeScope]);
 
@@ -112,8 +119,8 @@ function FastForwardSection() {
         <FastForwardButton speed={4} />
         <FastForwardButton speed={8} />
         <FastForwardButton speed={16} />
-        <SkipButton />
       </div>
+        <SkipButton />
     </motion.div>
   );
 }
@@ -126,16 +133,16 @@ function MultiplicationType() {
   const [typeScope, animate] = useAnimate(null);
 
   useEffect(() => {
+    const matrixSizeElement = document.getElementById("matrixSizeHeader");
+    const matrixSizeXOffset =
+      matrixSizeElement.getBoundingClientRect().left;
+    const standardButtonElement = document.getElementById(
+      "standardButtonHeader",
+    );
+    const standardButtonXOffset =
+      standardButtonElement.getBoundingClientRect().left;
     if (started === true) {
       const typeHeaderAnimation = async () => {
-        const matrixSizeElement = document.getElementById("matrixSizeHeader");
-        const matrixSizeXOffset =
-          matrixSizeElement.getBoundingClientRect().left;
-        const standardButtonElement = document.getElementById(
-          "standardButtonHeader",
-        );
-        const standardButtonXOffset =
-          standardButtonElement.getBoundingClientRect().left;
         await animate(
           typeScope.current,
           { x: matrixSizeXOffset - standardButtonXOffset },
@@ -158,6 +165,31 @@ function MultiplicationType() {
         );
       };
       typeHeaderAnimation();
+    }else if(started == false){
+      const reverseTypeHeaderAnimation = async()=>{
+        await animate(
+          ".strassenType",
+          { y: 0 },
+          { duration: 0.8, ease: "easeInOut" },
+        );
+        await animate(
+          typeScope.current,
+          { y: 0 },
+          { duration: 1, ease: "easeInOut" },
+        );
+        await animate(
+          typeScope.current,
+          { x: 0 },
+          { delay: 1, duration: 1, ease: "easeInOut" },
+        );
+        animate(
+          ".typeUnderline",
+          { opacity: 1 },
+          { duration: 0.5, ease: "easeInOut" },
+        );
+
+      }
+      reverseTypeHeaderAnimation()
     }
   }, [typeScope, animate, started]);
 

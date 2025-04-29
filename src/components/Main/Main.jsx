@@ -2,7 +2,7 @@ import { useState } from "react";
 import StandardMatrix from "./StandardMatrix";
 import StandardResult from "./StandardResult";
 import { motion } from "motion/react";
-import { useIsMultiplicationFinished, useMatrixSizeStore } from "../../utils/store";
+import { useIsMultiplicationFinished, useMatrixSizeStore, useStandardKey } from "../../utils/store";
 
 export default function Main() {
   const [matrix1Pos, setMatrix1Pos] = useState({ row: "3", col: "2" });
@@ -16,11 +16,11 @@ export default function Main() {
     matrix2Pos,
     setMatrix2Pos,
   };
-
+  const standardKey = useStandardKey((state)=>state.standardKey)
   
   return (
     <motion.main
-    transition={{ease:'linear',duration:3}}
+    transition={{ease:'easeOut',duration:3}}
     variants={
       
       {active:{x:'-100%'},initial:{x:0}}
@@ -30,7 +30,9 @@ export default function Main() {
     className="flex ">
       {matrixSize === 'small' && (
         <>
-        <StandardMatrix inputMatrixes={inputMatrixes} />
+        <StandardMatrix 
+        key={standardKey}
+        inputMatrixes={inputMatrixes} />
         <StandardResult row={matrix1Pos.row} col={matrix2Pos.col}/>
         </>
 

@@ -1,10 +1,14 @@
 import { createPortal } from "react-dom";
 import Matrix from "./Matrix";
 import {
+  useFastForwardSpeed,
   useIsMultiplicationFinished,
   useIsResultButtonVisible,
+  useIsSkipped,
   useResultExecutionTime,
   useResultMatrixSize,
+  useStandardKey,
+  useStartedStore,
 } from "../../utils/store";
 import { useEffect, useState } from "react";
 
@@ -67,6 +71,11 @@ function DoneButton(){
   const isMultiplicationFinished = useIsMultiplicationFinished(
     (state) => state.isMultiplicationFinished,
   );
+  const setIsMultiplicationFinished = useIsMultiplicationFinished(
+    (state) => state.setIsMultiplicationFinished,
+  );
+  const setStandardKey = useStandardKey((state)=>state.setStandardKey)
+  const setStarted = useStartedStore((state)=>state.setStarted)
 
   useEffect(()=>{
     if(isMultiplicationFinished){
@@ -81,6 +90,9 @@ function DoneButton(){
     <button
       onClick={()=>{
         setIsButtonVisible(false)
+        setIsMultiplicationFinished(false)
+        setStarted(false)
+        setStandardKey((key)=>key+1)
       }}
       className={`h-[74px] w-[250px] text-[64px] font-smt
         self-center ${isButtonVisible?'visible':'invisible'}
@@ -98,12 +110,16 @@ function ResultButton() {
   const setIsMultiplicationFinished = useIsMultiplicationFinished(
     (state) => state.setIsMultiplicationFinished,
   );
+  const setFastForwardSpeed = useFastForwardSpeed((state)=>state.setFastForwardSpeed)
+  const setIsSkipped = useIsSkipped((state)=>state.setIsSkipped)
 
   return (
     <div
       onClick={()=>{
         setIsMultiplicationFinished(true)
         setIsResultVisible(false)
+        setFastForwardSpeed(1)
+        setIsSkipped(false)
       }}
       className={`h-[74px] w-[250px] text-[64px] font-smt
         ${isResultVisible ? "visible" : "invisible"} fixed bottom-[50px] 
