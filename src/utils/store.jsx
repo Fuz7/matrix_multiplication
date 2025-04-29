@@ -42,6 +42,13 @@ export const useIsMultiplicationFinished = create((set) => {
   };
 });
 
+export const useIsSkipped = create((set)=>{
+  return{
+    isSkipped:false,
+    setIsSkipped: (isSkipped)=> set({isSkipped:isSkipped})
+  }
+})
+
 export const useResultMatrixSize = create((set)=>{
   return{
     resultMatrixSize:"1x1",

@@ -2,7 +2,9 @@
 import smallBracket from "@images/smallBracket.svg";
 import {
   useFastForwardSpeed,
+  useIsMultiplicationFinished,
   useIsResultButtonVisible,
+  useIsSkipped,
   useMatrixSizeStore,
   useMultiplicationType,
   useStartedStore,
@@ -77,16 +79,28 @@ function MatrixSizeSection() {
 function FastForwardSection() {
   const started = useStartedStore((state) => state.started);
   const [fastForwardScope, animate] = useAnimate(null);
+  const {isMultiplicationFinished} = 
+  useIsMultiplicationFinished((state)=>state)
+  const setFastForwardSpeed = useFastForwardSpeed((state)=>state.setFastForwardSpeed)
+
 
   useEffect(() => {
-    if (started === true) {
+    if (started === true && isMultiplicationFinished === false) {
       animate(
         fastForwardScope.current,
         { y: 105 },
         { duration: 0.7, ease: "easeInOut", delay: 4 },
       );
+    }else if(started === true && isMultiplicationFinished){
+      setFastForwardSpeed(1)
+      animate(
+        fastForwardScope.current,
+        { y: 0 },
+        { duration: 0.7, ease: "easeInOut",},
+      );
+
     }
-  }, [started, animate, fastForwardScope]);
+  }, [started, animate, fastForwardScope,isMultiplicationFinished,setFastForwardSpeed]);
 
   return (
     <motion.div
@@ -98,14 +112,8 @@ function FastForwardSection() {
         <FastForwardButton speed={4} />
         <FastForwardButton speed={8} />
         <FastForwardButton speed={16} />
+        <SkipButton />
       </div>
-      <button
-        className="flex h-[50px] w-[120px] flex-col
-          items-center justify-center border border-solid border-white text-[40px]
-          tracking-[-0.1em]"
-      >
-        SKIP
-      </button>
     </motion.div>
   );
 }
@@ -223,4 +231,26 @@ function FastForwardButton({speed}) {
       {speed}x
     </button>
   );
+}
+
+function SkipButton(){
+  const {isSkipped,setIsSkipped} = useIsSkipped((state)=>state)
+  return(
+      <button
+        onClick={()=>{
+          setIsSkipped(true)
+        }}
+        className={`flex h-[50px] w-[120px] flex-col
+          items-center justify-center
+           ${isSkipped===true
+            ? "text-mainBlack bg-white"
+            : "border border-solid border-white text-white"
+           }
+           text-[40px]
+          tracking-[-0.1em] cursor-pointer`}
+      >
+        SKIP
+      </button>
+
+)
 }

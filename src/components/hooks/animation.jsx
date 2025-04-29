@@ -6,11 +6,12 @@ import {
   setMatrixInputFrom2dArray,
 } from "../../utils/array";
 import { standardMultiplication } from "../../utils/multiplication";
-import { delayInMs, getSpeed } from "../../utils/time";
+import { delayInMs, getIsSkipped, getSpeed } from "../../utils/time";
 import { getMatrixSpan, setTranslate } from "../../utils/element";
 import { animate } from "motion";
 import {
   useIsResultButtonVisible,
+  useIsSkipped,
   useResultExecutionTime,
   useResultMatrixSize,
 } from "../../utils/store";
@@ -101,7 +102,6 @@ export function useStandardMatrixAnimation(
             { x: [orderXPos, orderXPos], y: [orderYPos, orderYPos] },
             { duration: 0.001 },
           );
-          // console.log(matrix1SpanDimension)
           animateMult(
             matrix1Span,
             { y: matrix1YPos },
@@ -239,8 +239,7 @@ export function useStandardMatrixAnimation(
             { duration: 0.001 },
           );
           orderNumber += 1;
-        }
-        if (step.type === "add") {
+        } else if (step.type === "add") {
           const invisibleSum = document.getElementById("invisibleSum");
           const invisibleSumSpan = invisibleSum.getElementsByTagName("span")[0];
           const invisibleSumDimension = invisibleSum.getBoundingClientRect();
@@ -333,11 +332,15 @@ export function useStandardMatrixAnimation(
           x = (1 + x) % result[0].length;
 
           orderNumber = 1;
+          if(getIsSkipped())break
         }
+      }
+      if (getIsSkipped) {
+        setMatrixInputFrom2dArray("outputMatrix", result);
       }
       setIsResultVisible(true);
     },
-    [animateMult, setIsResultVisible],
+    [animateMult, setIsResultVisible, getIsSkipped],
   );
 
   useEffect(() => {
@@ -345,10 +348,10 @@ export function useStandardMatrixAnimation(
       function makeInvisibleSpanRef() {
         const matrix1 = getMatrixArray("matrix1");
         const matrix2 = getMatrixArray("matrix2");
-        const { result,runtimeMs } = standardMultiplication(matrix1, matrix2);
-        const resultDimension = (result.length) + "x" + (result[0].length)
-        setResultMatrixSize(resultDimension)
-        setResultExecutionTime(runtimeMs)
+        const { result, runtimeMs } = standardMultiplication(matrix1, matrix2);
+        const resultDimension = result.length + "x" + result[0].length;
+        setResultMatrixSize(resultDimension);
+        setResultExecutionTime(runtimeMs);
         setMatrixInputFrom2dArray("resultMatrix", result);
         const matrix1AttributeAndContainer =
           getMatrixArrayAttributesAndContainer("matrix1");
@@ -395,7 +398,7 @@ export function useStandardMatrixAnimation(
     matrixPositioned,
     animateMatrixNumbers,
     setResultExecutionTime,
-    setResultMatrixSize
+    setResultMatrixSize,
   ]);
 
   return { outputMatrixScope, invisibleSpanRef, matrixPositioned };

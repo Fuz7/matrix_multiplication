@@ -35,7 +35,8 @@ export default function StandardMatrix({ inputMatrixes }) {
     (_, i) => i + 1,
   );
   return (
-    <div className="flex min-w-[100%] relative flex-col items-center gap-[45px]">
+    <div 
+    className="flex min-w-[100%] relative flex-col items-center gap-[45px]">
       <div
         ref={multMatrixScope}
         className="mt-[40px] flex items-center justify-center gap-[50px]"

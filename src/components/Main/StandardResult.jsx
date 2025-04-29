@@ -6,13 +6,15 @@ import {
   useResultExecutionTime,
   useResultMatrixSize,
 } from "../../utils/store";
+import { useEffect, useState } from "react";
 
-export default function Result({ row, col }) {
+export default function StandardResult({ row, col }) {
 
   const resultMatrixSize = useResultMatrixSize((state)=>state.resultMatrixSize)
   const resultExecutionTime = useResultExecutionTime((state)=>state.resultExecutionTime)
   
   return (
+    <div className="flex flex-col min-w-[100%] gap-[100px]">
     <div className="flex min-w-[100%] gap-[150px] pt-[120px] pl-[300px]">
       <div className="h-fit">
         <Matrix
@@ -22,7 +24,7 @@ export default function Result({ row, col }) {
           matrixOutput={true}
         />
       </div>
-
+    
       <div className="flex flex-col gap-[50px]">
         <h2 className="text-[50px] leading-none tracking-[-0.08em] ">
           RESULTS
@@ -36,7 +38,7 @@ export default function Result({ row, col }) {
               <div
               id="resultMatrixSize"
                className="tracking-tight">{resultMatrixSize}</div>
-              <span className="absolute bottom-[-1px] h-[2px] w-full bg-white"></span>
+              <span className="absolute bottom-[-4px] h-[2px] w-full bg-white"></span>
             </div>
           </div>
           <div className="flex gap-[70px]">
@@ -47,14 +49,46 @@ export default function Result({ row, col }) {
               <div 
               id="resultMatrixExecutionTime"
               className="text-right tracking-tight">{resultExecutionTime}ms</div>
-              <span className="absolute bottom-[-1px] h-[2px] w-full bg-white"></span>
+              <span className="absolute bottom-[-4px] h-[2px] w-full bg-white"></span>
             </div>
           </div>
         </div>
       </div>
       {createPortal(<ResultButton />, document.body)}
     </div>
+    <DoneButton />
+    </div>
   );
+}
+
+function DoneButton(){
+  
+  const [isButtonVisible,setIsButtonVisible] = useState(false)
+  const isMultiplicationFinished = useIsMultiplicationFinished(
+    (state) => state.isMultiplicationFinished,
+  );
+
+  useEffect(()=>{
+    if(isMultiplicationFinished){
+      setTimeout(() => {
+        setIsButtonVisible(true)
+      }, 3000);
+    }
+  },[isMultiplicationFinished])
+  
+
+  return (
+    <button
+      onClick={()=>{
+        setIsButtonVisible(false)
+      }}
+      className={`h-[74px] w-[250px] text-[64px] font-smt
+        self-center ${isButtonVisible?'visible':'invisible'}
+        flex cursor-pointer items-center justify-center
+         border border-solid border-white tracking-[-0.07em]
+    text-white`}>DONE</button>
+
+  )
 }
 
 function ResultButton() {
