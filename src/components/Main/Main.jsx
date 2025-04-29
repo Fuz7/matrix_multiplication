@@ -1,8 +1,9 @@
-import { useState } from "react";
-import StandardMatrix from "./StandardMatrix";
-import StandardResult from "./StandardResult";
+import { useEffect, useState } from "react";
+import SmallMatrix from "./SmallMatrix";
+import Result from "./Result";
 import { motion } from "motion/react";
-import { useIsMultiplicationFinished, useMatrixSizeStore, useStandardKey } from "../../utils/store";
+import { useIsMultiplicationFinished, useMatrixSizeStore, useMultiplicationType, useStandardKey } from "../../utils/store";
+import LargeMatrix from "./LargeMatrix";
 
 export default function Main() {
   const [matrix1Pos, setMatrix1Pos] = useState({ row: "3", col: "2" });
@@ -17,7 +18,24 @@ export default function Main() {
     setMatrix2Pos,
   };
   const standardKey = useStandardKey((state)=>state.standardKey)
-  
+  const multiplicationType = useMultiplicationType((state)=>state.multiplicationType)
+  useEffect(()=>{
+    if(matrixSize === 'small' && multiplicationType === 'standard' ){
+      setMatrix1Pos({row:"3",col:'2'})
+      setMatrix2Pos({row:'2',col:'3'})
+    }else if(matrixSize === 'small' && multiplicationType === 'strassen'){
+      setMatrix1Pos({row:"2",col:'2'})
+      setMatrix2Pos({row:'2',col:'2'})
+    }else if(matrixSize === 'large' && multiplicationType === 'standard' ){
+      setMatrix1Pos({row:"5",col:'5'})
+      setMatrix2Pos({row:'5',col:'5'})
+    }else if(matrixSize === 'large' && multiplicationType === 'strassen' ){
+      setMatrix1Pos({row:"6",col:'6'})
+      setMatrix2Pos({row:'6',col:'6'})
+    }
+  },[matrixSize,multiplicationType,setMatrix1Pos,setMatrix2Pos])
+
+
   return (
     <motion.main
     transition={{ease:'easeOut',duration:3}}
@@ -30,13 +48,17 @@ export default function Main() {
     className="flex ">
       {matrixSize === 'small' && (
         <>
-        <StandardMatrix 
+        <SmallMatrix 
         key={standardKey}
         inputMatrixes={inputMatrixes} />
-        <StandardResult row={matrix1Pos.row} col={matrix2Pos.col}/>
         </>
 
       )}
+      {matrixSize === 'large' && (
+        <LargeMatrix inputMatrixes={inputMatrixes} />
+      )}
+      <Result row={matrix1Pos.row} col={matrix2Pos.col} matrixSize={matrixSize}/>
+
     </motion.main>
   );
 }

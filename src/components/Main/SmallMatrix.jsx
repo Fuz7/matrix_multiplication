@@ -18,7 +18,7 @@ import {
   InvisibleSumSpan,
 } from "./Animation";
 
-export default function StandardMatrix({ inputMatrixes }) {
+export default function SmallMatrix({ inputMatrixes }) {
   const { matrix1Pos, setMatrix1Pos, matrix2Pos, setMatrix2Pos } =
     inputMatrixes;
   const started = useStartedStore((state) => state.started);

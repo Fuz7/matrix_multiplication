@@ -70,6 +70,7 @@ export function useStandardMatrixAnimation(
       let x = 0;
       let y = 0;
       let orderNumber = 1;
+
       for (const step of steps) {
         await animateMult(
           animatingMultSymbol,

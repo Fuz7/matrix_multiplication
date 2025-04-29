@@ -12,14 +12,17 @@ import {
 } from "../../utils/store";
 import { useEffect, useState } from "react";
 
-export default function StandardResult({ row, col }) {
+export default function StandardResult({ row, col,matrixSize }) {
 
   const resultMatrixSize = useResultMatrixSize((state)=>state.resultMatrixSize)
   const resultExecutionTime = useResultExecutionTime((state)=>state.resultExecutionTime)
   
   return (
     <div className="flex flex-col min-w-[100%] gap-[100px]">
-    <div className="flex min-w-[100%] gap-[150px] pt-[120px] pl-[300px]">
+    <div className={`flex min-w-[100%] pt-[120px]
+    ${matrixSize === 'small'?' gap-[150px] pl-[300px]':
+    'justify-center'}`}>
+      {matrixSize === 'small' && (
       <div className="h-fit">
         <Matrix
           row={row}
@@ -28,6 +31,7 @@ export default function StandardResult({ row, col }) {
           matrixOutput={true}
         />
       </div>
+      )}
     
       <div className="flex flex-col gap-[50px]">
         <h2 className="text-[50px] leading-none tracking-[-0.08em] ">
