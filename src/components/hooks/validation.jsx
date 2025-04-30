@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useStartedStore } from "../../utils/store";
 
-export function useStartButtonMatrixValidation(matrix1Pos, matrix2Pos) {
+export function useSmallStartButtonMatrixValidation(matrix1Pos, matrix2Pos) {
   const [isEnabled, setIsEnabled] = useState(true);
   const { started, setStarted } = useStartedStore((state) => state);
 

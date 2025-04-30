@@ -4,11 +4,11 @@ import Matrix from "./Matrix";
 import multiplicationSymbol from "@images/multiplicationSymbol.svg";
 import animatingMultSymbol from "@images/animatingMultSymbol.svg";
 import equalSymbol from "@images/equalSymbol.svg";
-import { useStartButtonMatrixValidation } from "../hooks/validation";
+import { useSmallStartButtonMatrixValidation} from "../hooks/validation";
 import {
   useHeaderAnimation,
+  useSmallStartButtonAnimation,
   useStandardMatrixAnimation,
-  useStartButtonAnimation,
 } from "../hooks/animation";
 import { createPortal } from "react-dom";
 import {
@@ -140,11 +140,11 @@ export default function SmallMatrix({ inputMatrixes }) {
 }
 
 function StartButton({ matrix1Pos, matrix2Pos }) {
-  const { isEnabled, started, handleStart } = useStartButtonMatrixValidation(
+  const { isEnabled, started, handleStart } = useSmallStartButtonMatrixValidation(
     matrix1Pos,
     matrix2Pos,
   );
-  const startButtonScope = useStartButtonAnimation(started);
+  const startButtonScope = useSmallStartButtonAnimation(started);
 
   return (
     <button

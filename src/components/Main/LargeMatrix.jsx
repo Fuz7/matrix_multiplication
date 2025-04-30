@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import DimensionInput from "./DimensionInput";
 import largeXSymbol from "@images/largeXSymbol.svg";
+import { useStartedStore } from "../../utils/store";
 export default function LargeMatrix({ inputMatrixes }) {
   const largeMatrixRef = useRef(null);
 
@@ -27,7 +28,7 @@ export default function LargeMatrix({ inputMatrixes }) {
     items-center justify-between"
     >
       <div></div>
-      <div className="mb-[204px] flex gap-[150px]">
+      <div className="mb-[104px] flex gap-[150px]">
         <DimensionInput
           matrixPos={largeMatrix1Pos}
           setMatrixPos={setLargeMatrix1Pos}
@@ -38,7 +39,34 @@ export default function LargeMatrix({ inputMatrixes }) {
           setMatrixPos={setLargeMatrix2Pos}
         />
       </div>
-      <div></div>
+      <StartButton matrix1Pos={largeMatrix1Pos} matrix2Pos={largeMatrix2Pos} />
     </main>
+  );
+}
+
+function StartButton({ matrix1Pos, matrix2Pos }) {
+  const [isEnabled, setIsEnabled] = useState(true);
+  const { started, setStarted } = useStartedStore((state) => state);
+
+  useEffect(()=>{
+    if(matrix1Pos.col !== matrix2Pos.row){
+      setIsEnabled(false)
+      return
+    }
+    setIsEnabled(true)
+  },[matrix1Pos,matrix2Pos,setIsEnabled])
+
+  return (
+    <button
+      onClick={() => {
+      }}
+      disabled={!isEnabled}
+      className={`flex h-[74px] w-[250px] items-center 
+    justify-center text-[64px] tracking-[-0.05em] mb-[100px]
+    ${isEnabled && !started ? "cursor-pointer" : "cursor-default opacity-50"}
+    border border-white`}
+    >
+      START
+    </button>
   );
 }

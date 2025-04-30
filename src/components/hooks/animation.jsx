@@ -11,12 +11,11 @@ import { getMatrixSpan, setTranslate } from "../../utils/element";
 import { animate } from "motion";
 import {
   useIsResultButtonVisible,
-  useIsSkipped,
   useResultExecutionTime,
   useResultMatrixSize,
 } from "../../utils/store";
 
-export function useStartButtonAnimation(started) {
+export function useSmallStartButtonAnimation(started) {
   const [startButtonScope, animate] = useAnimate(null);
 
   useEffect(() => {
