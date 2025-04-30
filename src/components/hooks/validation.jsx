@@ -34,8 +34,28 @@ export function useSmallStartButtonMatrixValidation(matrix1Pos, matrix2Pos) {
   const handleStart = () => {
     if (!validateMatrixInput()) return;
     setStarted(true);
+  };
 
-  }
+  return { isEnabled, handleStart, started };
+}
 
-  return {isEnabled,handleStart,started}
+export function useLargeStartButtonMatrixValidation(matrix1Pos, matrix2Pos) {
+  const [isEnabled, setIsEnabled] = useState(true);
+  const { started, setStarted } = useStartedStore((state) => state);
+
+  useEffect(() => {
+    if (matrix1Pos.col !== matrix2Pos.row) {
+      setIsEnabled(false);
+      return;
+    }
+    setIsEnabled(true);
+  }, [matrix1Pos, matrix2Pos, setIsEnabled]);
+
+  const handleStart = ()=>{
+    if(!isEnabled) return
+    setStarted(true)
+  }  
+
+  return {isEnabled,started,handleStart}
+
 }

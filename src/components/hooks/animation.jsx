@@ -131,7 +131,7 @@ export function useStandardMatrixAnimation(
           animateMult(
             animatingMultSymbol,
             { opacity: 0, scale: 0 },
-            { duration: 1 },
+            { duration: 1 * getSpeed() },
           );
           animateMult(
             matrix1Span,
