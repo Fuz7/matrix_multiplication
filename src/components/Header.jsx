@@ -32,13 +32,13 @@ function MatrixSizeSection() {
   const [sizeScope, animate] = useAnimate(null);
 
   useEffect(() => {
-    if (started === true) {
+    if (started === true && matrixSize === 'small') {
       animate(
         sizeScope.current,
         { y: -150 },
         { duration: 1, ease: "easeInOut" },
       );
-    }else if(started === false){
+    }else if(started === false && matrixSize === 'small'){
       animate(
         sizeScope.current,
         { y: 0 },
@@ -46,7 +46,7 @@ function MatrixSizeSection() {
       );
       
     }
-  }, [started, animate, sizeScope]);
+  }, [started, animate, sizeScope,matrixSize]);
 
   function SizeButton({ text }) {
     return (
@@ -89,16 +89,17 @@ function FastForwardSection() {
   const {isMultiplicationFinished} = 
   useIsMultiplicationFinished((state)=>state)
   const setFastForwardSpeed = useFastForwardSpeed((state)=>state.setFastForwardSpeed)
+  const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
 
 
   useEffect(() => {
-    if (started === true && isMultiplicationFinished === false) {
+    if (started === true && isMultiplicationFinished === false && matrixSize ==='small') {
       animate(
         fastForwardScope.current,
         { y: 105 },
         { duration: 0.7, ease: "easeInOut", delay: 4 },
       );
-    }else if(started === true && isMultiplicationFinished){
+    }else if(started === true && isMultiplicationFinished && matrixSize === 'small'){
       setFastForwardSpeed(1)
       animate(
         fastForwardScope.current,
@@ -107,7 +108,7 @@ function FastForwardSection() {
       );
 
     }
-  }, [started, animate, fastForwardScope,isMultiplicationFinished,setFastForwardSpeed]);
+  }, [started, animate, fastForwardScope,isMultiplicationFinished,setFastForwardSpeed,matrixSize]);
 
   return (
     <motion.div
@@ -129,6 +130,7 @@ function MultiplicationType() {
   const { multiplicationType, setMultiplicationType } = useMultiplicationType(
     (state) => state,
   );
+  const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
   const started = useStartedStore((state) => state.started);
   const [typeScope, animate] = useAnimate(null);
 
@@ -141,7 +143,7 @@ function MultiplicationType() {
     );
     const standardButtonXOffset =
       standardButtonElement.getBoundingClientRect().left;
-    if (started === true) {
+    if (started === true && matrixSize === 'small') {
       const typeHeaderAnimation = async () => {
         await animate(
           typeScope.current,
@@ -165,7 +167,7 @@ function MultiplicationType() {
         );
       };
       typeHeaderAnimation();
-    }else if(started == false){
+    }else if(started == false && matrixSize === 'small'){
       const reverseTypeHeaderAnimation = async()=>{
         await animate(
           ".strassenType",
@@ -191,7 +193,7 @@ function MultiplicationType() {
       }
       reverseTypeHeaderAnimation()
     }
-  }, [typeScope, animate, started]);
+  }, [typeScope, animate, started,matrixSize]);
 
   return (
     <div ref={typeScope} className="flex justify-center  gap-[90px]">

@@ -20,7 +20,7 @@ export default function StandardResult({ row, col,matrixSize }) {
   return (
     <div className="flex flex-col min-w-[100%] gap-[100px]">
     <div className={`flex min-w-[100%] pt-[120px]
-    ${matrixSize === 'small'?' gap-[150px] pl-[300px]':
+      ${matrixSize === 'small'?' gap-[150px] pl-[300px]':
     'justify-center'}`}>
       {matrixSize === 'small' && (
       <div className="h-fit">

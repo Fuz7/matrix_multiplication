@@ -4,6 +4,8 @@ import largeXSymbol from "@images/largeXSymbol.svg";
 import { useStartedStore } from "../../utils/store";
 import { useLargeStartButtonMatrixValidation } from "../hooks/validation";
 import { motion } from "motion/react";
+import { createMatrix } from "../../utils/matrix";
+import { useHeaderAnimation } from "../hooks/animation";
 export default function LargeMatrix({ inputMatrixes }) {
   const largeMatrixRef = useRef(null);
 
@@ -55,10 +57,14 @@ export default function LargeMatrix({ inputMatrixes }) {
 function StartButton({ matrix1Pos, matrix2Pos }) {
   const { isEnabled, started, handleStart } =
     useLargeStartButtonMatrixValidation(matrix1Pos, matrix2Pos);
-
+  useHeaderAnimation(started)
   return (
     <button
-      onClick={() => handleStart()}
+      onClick={() => {
+        handleStart()
+        console.log(createMatrix(
+          Number.parseInt(matrix1Pos.row),Number.parseInt(matrix1Pos.col)))
+      }}
       disabled={!isEnabled}
       className={`mb-[100px] flex h-[74px] w-[250px] 
     items-center justify-center text-[64px] tracking-[-0.05em]
@@ -79,6 +85,7 @@ function ProcessingText() {
       {dotCountArray.map((_, i) => {
         return (
           <motion.div
+            key={i+"dot"}
             animate={{ opacity: [0, 1, 0] }}
             transition={{
               duration: 1.5,

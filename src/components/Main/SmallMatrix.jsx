@@ -27,7 +27,7 @@ export default function SmallMatrix({ inputMatrixes }) {
     setSmallMatrix2Pos,
   } = inputMatrixes
   const started = useStartedStore((state) => state.started);
-  const { multMatrixScope, animateMult } = useHeaderAnimation(started);
+  const { multMatrixScope, animateMult } = useHeaderAnimation();
   const { outputMatrixScope, invisibleSpanRef, matrixPositioned } =
     useStandardMatrixAnimation(started, multMatrixScope, animateMult);
   const invisibleProducts = Array.from(

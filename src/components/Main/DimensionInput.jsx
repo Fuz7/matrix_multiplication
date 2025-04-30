@@ -9,7 +9,7 @@ export default function DimensionInput({ matrixPos, setMatrixPos }) {
   const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
   const multiplicationType = useMultiplicationType((state)=>state.multiplicationType)
   useEffect(()=>{
-    if(started === true){
+    if(started === true && matrixSize === 'small'){
       const inputs = Array.from(scope.current.getElementsByTagName('input'))
       inputs.forEach((input)=>{
         input.disabled = true;
