@@ -1,20 +1,44 @@
+import { useEffect, useRef } from "react";
 import DimensionInput from "./DimensionInput";
-import largeXSymbol from '@images/largeXSymbol.svg'
-export default function LargeMatrix({inputMatrixes}){
-  const { matrix1Pos, setMatrix1Pos, matrix2Pos, setMatrix2Pos } =
-    inputMatrixes;
+import largeXSymbol from "@images/largeXSymbol.svg";
+export default function LargeMatrix({ inputMatrixes }) {
+  const largeMatrixRef = useRef(null);
 
-  return(
-    <main className="flex min-w-[100%] flex-col items-center
-    min-h-[calc(100vh-204px)] justify-between">
+  useEffect(() => {
+    setTimeout(() => {
+      largeMatrixRef.current.style.visibility = "visible";
+    }, 50);
+  }, [largeMatrixRef]);
+
+  const {
+    largeMatrix1Pos,
+    setLargeMatrix1Pos,
+    largeMatrix2Pos,
+    setLargeMatrix2Pos,
+  } = inputMatrixes;
+
+  return (
+    <main
+      ref={largeMatrixRef}
+      style={{
+        visibility: "hidden",
+      }}
+      className="flex min-h-[calc(100vh-204px)] min-w-[100%] flex-col 
+    items-center justify-between"
+    >
       <div></div>
-      <div className="flex gap-[150px] mb-[204px]">
-        <DimensionInput matrixPos={matrix1Pos} setMatrixPos={setMatrix1Pos} />
+      <div className="mb-[204px] flex gap-[150px]">
+        <DimensionInput
+          matrixPos={largeMatrix1Pos}
+          setMatrixPos={setLargeMatrix1Pos}
+        />
         <img src={largeXSymbol} alt="" />
-        <DimensionInput matrixPos={matrix2Pos} setMatrixPos={setMatrix2Pos}/>
+        <DimensionInput
+          matrixPos={largeMatrix2Pos}
+          setMatrixPos={setLargeMatrix2Pos}
+        />
       </div>
       <div></div>
     </main>
-  )
+  );
 }
-

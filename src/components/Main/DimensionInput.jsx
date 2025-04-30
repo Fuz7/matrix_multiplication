@@ -1,11 +1,13 @@
 import { useEffect,  } from "react";
-import { useStartedStore } from "../../utils/store";
+import { useMatrixSizeStore, useMultiplicationType, useStartedStore } from "../../utils/store";
 import { useAnimate } from "motion/react";
+import { validateMatrixInput } from "../../utils/element";
 
 export default function DimensionInput({ matrixPos, setMatrixPos }) {
   const started = useStartedStore((state) => state.started);
   const [scope, animate] = useAnimate(null);
-  
+  const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
+  const multiplicationType = useMultiplicationType((state)=>state.multiplicationType)
   useEffect(()=>{
     if(started === true){
       const inputs = Array.from(scope.current.getElementsByTagName('input'))
@@ -27,13 +29,11 @@ export default function DimensionInput({ matrixPos, setMatrixPos }) {
       <input
         onInput={(e) => {
           const { value } = e.target;
-          const newValue =
-            value === "" ? "" : value.replace(/[^1-4]/g, "").slice(0, 1); // keep only first digit 1–4 or empty
-
+          const newValue = validateMatrixInput(matrixSize,multiplicationType,value)
           setMatrixPos({ ...matrixPos, row: newValue });
         }}
         value={matrixPos.row}
-        className="w-[30px] h-[34px] border-b-[2px] border-white text-center"
+        className={`${matrixSize === 'small'?'w-[30px] h-[34px]':'w-[200px] h-[75px] text-[84px] pt-[5px]'} border-b-[2px] border-white text-center`}
         type="text"
       />
       <span>x</span>
@@ -41,13 +41,12 @@ export default function DimensionInput({ matrixPos, setMatrixPos }) {
 
         onInput={(e) => {
           const { value } = e.target;
-          const newValue =
-            value === "" ? "" : value.replace(/[^1-4]/g, "").slice(0, 1); // keep only first digit 1–4 or empty
+          const newValue = validateMatrixInput(matrixSize,multiplicationType,value)
 
           setMatrixPos({ ...matrixPos, col: newValue });
         }}
         value={matrixPos.col}
-        className="w-[30px] h-[34px] border-b-[2px] border-white text-center"
+        className={`${matrixSize === 'small'?'w-[30px] h-[34px]':'w-[200px] h-[75px] text-[84px] pt-[5px]'} border-b-[2px] border-white text-center`}
         type="text"
       />
     </div>

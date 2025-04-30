@@ -4,37 +4,33 @@ import Result from "./Result";
 import { motion } from "motion/react";
 import { useIsMultiplicationFinished, useMatrixSizeStore, useMultiplicationType, useStandardKey } from "../../utils/store";
 import LargeMatrix from "./LargeMatrix";
+import { useMatrixSizeAndTypeChange } from "../hooks/main";
 
 export default function Main() {
-  const [matrix1Pos, setMatrix1Pos] = useState({ row: "3", col: "2" });
-  const [matrix2Pos, setMatrix2Pos] = useState({ row: "2", col: "3" });
+  const [smallMatrix1Pos, setSmallMatrix1Pos] = useState({ row: "3", col: "2" });
+  const [smallMatrix2Pos, setSmallMatrix2Pos] = useState({ row: "2", col: "3" });
+  const [largeMatrix1Pos, setLargeMatrix1Pos] = useState({ row: "5", col: "5" });
+  const [largeMatrix2Pos, setLargeMatrix2Pos] = useState({ row: "5", col: "5" });
   const isMultiplicationFinished = useIsMultiplicationFinished((state)=>
     state.isMultiplicationFinished)
   const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
-  const inputMatrixes = {
-    matrix1Pos,
-    setMatrix1Pos,
-    matrix2Pos,
-    setMatrix2Pos,
+  const smallMatrixes = {
+    smallMatrix1Pos,
+    setSmallMatrix1Pos,
+    smallMatrix2Pos,
+    setSmallMatrix2Pos,
   };
+
+  const largeMatrixes = {
+    largeMatrix1Pos,
+    setLargeMatrix1Pos,
+    largeMatrix2Pos,
+    setLargeMatrix2Pos
+  }
+
   const standardKey = useStandardKey((state)=>state.standardKey)
   const multiplicationType = useMultiplicationType((state)=>state.multiplicationType)
-  useEffect(()=>{
-    if(matrixSize === 'small' && multiplicationType === 'standard' ){
-      setMatrix1Pos({row:"3",col:'2'})
-      setMatrix2Pos({row:'2',col:'3'})
-    }else if(matrixSize === 'small' && multiplicationType === 'strassen'){
-      setMatrix1Pos({row:"2",col:'2'})
-      setMatrix2Pos({row:'2',col:'2'})
-    }else if(matrixSize === 'large' && multiplicationType === 'standard' ){
-      setMatrix1Pos({row:"5",col:'5'})
-      setMatrix2Pos({row:'5',col:'5'})
-    }else if(matrixSize === 'large' && multiplicationType === 'strassen' ){
-      setMatrix1Pos({row:"6",col:'6'})
-      setMatrix2Pos({row:'6',col:'6'})
-    }
-  },[matrixSize,multiplicationType,setMatrix1Pos,setMatrix2Pos])
-
+  useMatrixSizeAndTypeChange(smallMatrixes,largeMatrixes,matrixSize,multiplicationType)
 
   return (
     <motion.main
@@ -50,14 +46,16 @@ export default function Main() {
         <>
         <SmallMatrix 
         key={standardKey}
-        inputMatrixes={inputMatrixes} />
+        inputMatrixes={smallMatrixes} />
+        <Result row={smallMatrix1Pos.row} col={smallMatrix2Pos.col} matrixSize={matrixSize}/>
         </>
-
       )}
       {matrixSize === 'large' && (
-        <LargeMatrix inputMatrixes={inputMatrixes} />
+        <>
+        <LargeMatrix inputMatrixes={largeMatrixes} />
+        <Result row={largeMatrix1Pos.row} col={largeMatrix2Pos.col} matrixSize={matrixSize}/>
+        </>
       )}
-      <Result row={matrix1Pos.row} col={matrix2Pos.col} matrixSize={matrixSize}/>
 
     </motion.main>
   );

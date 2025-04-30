@@ -17,39 +17,54 @@ import {
   InvisibleProductSpan,
   InvisibleSumSpan,
 } from "./Animation";
+import { useEffect } from "react";
 
 export default function SmallMatrix({ inputMatrixes }) {
-  const { matrix1Pos, setMatrix1Pos, matrix2Pos, setMatrix2Pos } =
-    inputMatrixes;
+  const  {
+    smallMatrix1Pos,
+    setSmallMatrix1Pos,
+    smallMatrix2Pos,
+    setSmallMatrix2Pos,
+  } = inputMatrixes
   const started = useStartedStore((state) => state.started);
   const { multMatrixScope, animateMult } = useHeaderAnimation(started);
   const { outputMatrixScope, invisibleSpanRef, matrixPositioned } =
     useStandardMatrixAnimation(started, multMatrixScope, animateMult);
   const invisibleProducts = Array.from(
-    { length: Number.parseInt(matrix1Pos.col) },
+    { length: Number.parseInt(smallMatrix1Pos.col) },
     (_, i) => i + 1,
   );
 
   const invisiblePlusSign = Array.from(
-    { length: Number.parseInt(matrix1Pos.col - 1) },
+    { length: Number.parseInt(smallMatrix1Pos.col - 1) },
     (_, i) => i + 1,
   );
+
+  useEffect(()=>{
+    setTimeout(() => {
+      multMatrixScope.current.style.visibility = "visible"
+    }, 50);
+  },[multMatrixScope])
+
   return (
     <div 
     className="flex min-w-[100%] relative flex-col items-center gap-[45px]">
       <div
+        style={{
+          visibility:'hidden'
+        }}
         ref={multMatrixScope}
         className="mt-[40px] flex items-center justify-center gap-[50px]"
       >
         <div className="flex flex-col gap-[30px]">
           <div className="flex h-[300px] w-[360px] flex-col items-center justify-center">
             <Matrix
-              row={matrix1Pos.row}
-              column={matrix1Pos.col}
+              row={smallMatrix1Pos.row}
+              column={smallMatrix1Pos.col}
               id={"matrix1"}
             ></Matrix>
           </div>
-          <DimensionInput matrixPos={matrix1Pos} setMatrixPos={setMatrix1Pos} />
+          <DimensionInput matrixPos={smallMatrix1Pos} setMatrixPos={setSmallMatrix1Pos} />
         </div>
         <div className="relative">
           <img
@@ -61,7 +76,7 @@ export default function SmallMatrix({ inputMatrixes }) {
           <div
             id="animatingMultSymbol"
             style={{
-              top: `-${160 + Number.parseInt(matrix1Pos.row) * 20}px`,
+              top: `-${160 + Number.parseInt(smallMatrix1Pos.row) * 20}px`,
             }}
             className="absolute left-1/2 flex 
             aspect-square w-[50px] origin-center -translate-x-1/2
@@ -73,15 +88,15 @@ export default function SmallMatrix({ inputMatrixes }) {
         <div className="flex flex-col gap-[30px]">
           <div className="flex h-[300px] w-[360px] flex-col items-center justify-center">
             <Matrix
-              row={matrix2Pos.row}
-              column={matrix2Pos.col}
+              row={smallMatrix2Pos.row}
+              column={smallMatrix2Pos.col}
               id={"matrix2"}
             ></Matrix>
           </div>
-          <DimensionInput matrixPos={matrix2Pos} setMatrixPos={setMatrix2Pos} />
+          <DimensionInput matrixPos={smallMatrix2Pos} setMatrixPos={setSmallMatrix2Pos} />
         </div>
       </div>
-      <StartButton matrix1Pos={matrix1Pos} matrix2Pos={matrix2Pos} />
+      <StartButton matrix1Pos={smallMatrix1Pos} matrix2Pos={smallMatrix2Pos} />
       <div
         ref={outputMatrixScope}
         className="invisible absolute flex gap-[100px] opacity-0"
@@ -92,8 +107,8 @@ export default function SmallMatrix({ inputMatrixes }) {
        "
         >
           <Matrix
-            row={matrix1Pos.row}
-            column={matrix2Pos.col}
+            row={smallMatrix1Pos.row}
+            column={smallMatrix2Pos.col}
             id={"outputMatrix"}
             matrixOutput={true}
           ></Matrix>
