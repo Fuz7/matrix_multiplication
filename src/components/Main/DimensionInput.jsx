@@ -30,7 +30,9 @@ export default function DimensionInput({ matrixPos, setMatrixPos }) {
         onInput={(e) => {
           const { value } = e.target;
           const newValue = validateMatrixInput(matrixSize,multiplicationType,value)
-          setMatrixPos({ ...matrixPos, row: newValue });
+          
+          multiplicationType === 'standard'?setMatrixPos({ ...matrixPos, row: newValue }):
+          setMatrixPos({row:newValue,col:newValue})
         }}
         disabled={started}
         value={matrixPos.row}
@@ -44,7 +46,8 @@ export default function DimensionInput({ matrixPos, setMatrixPos }) {
           const { value } = e.target;
           const newValue = validateMatrixInput(matrixSize,multiplicationType,value)
 
-          setMatrixPos({ ...matrixPos, col: newValue });
+          multiplicationType === 'standard'?setMatrixPos({ ...matrixPos, col: newValue }):
+          setMatrixPos({row:newValue,col:newValue})
         }}
         value={matrixPos.col}
         className={`${matrixSize === 'small'?'w-[30px] h-[34px]':'w-[200px] h-[75px] text-[84px] pt-[5px]'} border-b-[2px] border-white text-center`}

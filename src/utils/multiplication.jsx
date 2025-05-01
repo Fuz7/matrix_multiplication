@@ -169,3 +169,8 @@ function standardMultiply(A, B) {
 
   return result;
 }
+
+export function isValidPowerOfTwo(n) {
+  const num = Number(n);
+  return num >= 1 && num <= 4096 && (num & (num - 1)) === 0;
+}

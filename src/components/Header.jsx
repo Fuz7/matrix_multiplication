@@ -222,7 +222,12 @@ function MultiplicationType() {
         <img className="rotate-180" src={smallBracket} alt="" />
       </div>
       <div
-        onClick={() => {}}
+        onClick={() => {
+          if (multiplicationType !== "strassen") {
+            setMultiplicationType("strassen");
+          }
+
+        }}
         className={`strassenType flex items-center gap-[20px]
           ${multiplicationType === "strassen" ? "cursor-default" : "cursor-pointer"} 
       

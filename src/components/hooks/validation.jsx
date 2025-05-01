@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { useStartedStore } from "../../utils/store";
+import { useMultiplicationType, useStartedStore } from "../../utils/store";
+import { isValidPowerOfTwo } from "../../utils/multiplication";
 
 export function useSmallStartButtonMatrixValidation(matrix1Pos, matrix2Pos) {
   const [isEnabled, setIsEnabled] = useState(true);
@@ -42,21 +43,32 @@ export function useSmallStartButtonMatrixValidation(matrix1Pos, matrix2Pos) {
 export function useLargeStartButtonMatrixValidation(matrix1Pos, matrix2Pos) {
   const [isEnabled, setIsEnabled] = useState(true);
   const { started, setStarted } = useStartedStore((state) => state);
-
+  const multiplicationType = useMultiplicationType(
+    (state) => state.multiplicationType,
+  );
   useEffect(() => {
-    if (matrix1Pos.col !== matrix2Pos.row) {
-      setIsEnabled(false);
-      return;
+    if (
+      matrix1Pos.col === matrix2Pos.row &&
+      multiplicationType === "standard"
+    ) {
+      setIsEnabled(true);
+      return
+    } else if (
+      matrix1Pos.col === matrix2Pos.row &&
+      multiplicationType === "strassen" &&
+      isValidPowerOfTwo(matrix1Pos.col)
+    ) {
+      setIsEnabled(true)
+      return
     }
-    setIsEnabled(true);
-  }, [matrix1Pos, matrix2Pos, setIsEnabled]);
+    setIsEnabled(false);
+  }, [matrix1Pos, matrix2Pos, setIsEnabled, multiplicationType]);
 
-  const handleStart = ()=>{
-    if(!isEnabled) return
-    
-    started?setStarted(false):setStarted(true)
-  }  
+  const handleStart = () => {
+    if (!isEnabled) return;
 
-  return {isEnabled,started,handleStart}
+    started ? setStarted(false) : setStarted(true);
+  };
 
+  return { isEnabled, started, handleStart };
 }
