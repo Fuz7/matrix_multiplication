@@ -22,8 +22,8 @@ export function useMatrixSizeAndTypeChange(
       setLargeMatrix1Pos({ row: "5", col: "5" });
       setLargeMatrix2Pos({ row: "5", col: "5" });
     } else if (matrixSize === "large" && multiplicationType === "strassen") {
-      setLargeMatrix1Pos({ row: "6", col: "6" });
-      setLargeMatrix2Pos({ row: "6", col: "6" });
+      setLargeMatrix1Pos({ row: "16", col: "16" });
+      setLargeMatrix2Pos({ row: "16", col: "16" });
     }
   }, [
     matrixSize,

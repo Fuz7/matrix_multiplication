@@ -17,7 +17,7 @@ export default function Header() {
     <header className="flex flex-col px-[60px]">
       <div className="flex justify-between">
         <MatrixSizeSection />
-        
+
         <FastForwardSection />
       </div>
       <MultiplicationType />
@@ -25,42 +25,47 @@ export default function Header() {
   );
 }
 
-
 function MatrixSizeSection() {
   const { matrixSize, setMatrixSize } = useMatrixSizeStore((state) => state);
-  const {started,setStarted} = useStartedStore((state) => state);
+  const { started, setStarted } = useStartedStore((state) => state);
+  const isMultiplicationFinished = useIsMultiplicationFinished(
+    (state) => state.isMultiplicationFinished,
+  );
   const [sizeScope, animate] = useAnimate(null);
 
   useEffect(() => {
-    if (started === true && matrixSize === 'small') {
+    if (started === true && matrixSize === "small") {
       animate(
         sizeScope.current,
         { y: -150 },
         { duration: 1, ease: "easeInOut" },
       );
-    }else if(started === false && matrixSize === 'small'){
+    } else if (started === false && matrixSize === "small") {
       animate(
         sizeScope.current,
         { y: 0 },
-        { duration: 1, delay:4, ease: "easeInOut" },
+        { duration: 1, delay: 4, ease: "easeInOut" },
       );
-      
     }
-  }, [started, animate, sizeScope,matrixSize]);
+  }, [started, animate, sizeScope, matrixSize]);
 
   function SizeButton({ text }) {
     return (
       <div
         onClick={() => {
+          if (isMultiplicationFinished || started) return;
           matrixSize !== text && setMatrixSize(text);
-          setStarted(false)
+          setStarted(false);
         }}
         className={`h-[50px] w-[150px] tracking-[-0.05em]
         ${
           matrixSize === text
             ? "text-mainBlack bg-white"
-            : "cursor-pointer border border-solid border-white text-white"
+            : "border border-solid border-white text-white"
         }
+          ${matrixSize !== text 
+            && (isMultiplicationFinished === true || started === true) 
+            ? "opacity-20 cursor-default":'cursor-pointer'} 
            flex items-center justify-center
         text-[40px]`}
       >
@@ -87,29 +92,45 @@ function MatrixSizeSection() {
 function FastForwardSection() {
   const started = useStartedStore((state) => state.started);
   const [fastForwardScope, animate] = useAnimate(null);
-  const {isMultiplicationFinished} = 
-  useIsMultiplicationFinished((state)=>state)
-  const setFastForwardSpeed = useFastForwardSpeed((state)=>state.setFastForwardSpeed)
-  const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
-
+  const { isMultiplicationFinished } = useIsMultiplicationFinished(
+    (state) => state,
+  );
+  const setFastForwardSpeed = useFastForwardSpeed(
+    (state) => state.setFastForwardSpeed,
+  );
+  const matrixSize = useMatrixSizeStore((state) => state.matrixSize);
 
   useEffect(() => {
-    if (started === true && isMultiplicationFinished === false && matrixSize ==='small') {
+    if (
+      started === true &&
+      isMultiplicationFinished === false &&
+      matrixSize === "small"
+    ) {
       animate(
         fastForwardScope.current,
         { y: 105 },
         { duration: 0.7, ease: "easeInOut", delay: 4 },
       );
-    }else if(started === true && isMultiplicationFinished && matrixSize === 'small'){
-      setFastForwardSpeed(1)
+    } else if (
+      started === true &&
+      isMultiplicationFinished &&
+      matrixSize === "small"
+    ) {
+      setFastForwardSpeed(1);
       animate(
         fastForwardScope.current,
         { y: 0 },
-        { duration: 0.7, ease: "easeInOut",},
+        { duration: 0.7, ease: "easeInOut" },
       );
-
     }
-  }, [started, animate, fastForwardScope,isMultiplicationFinished,setFastForwardSpeed,matrixSize]);
+  }, [
+    started,
+    animate,
+    fastForwardScope,
+    isMultiplicationFinished,
+    setFastForwardSpeed,
+    matrixSize,
+  ]);
 
   return (
     <motion.div
@@ -122,7 +143,7 @@ function FastForwardSection() {
         <FastForwardButton speed={8} />
         <FastForwardButton speed={16} />
       </div>
-        <SkipButton />
+      <SkipButton />
     </motion.div>
   );
 }
@@ -131,20 +152,22 @@ function MultiplicationType() {
   const { multiplicationType, setMultiplicationType } = useMultiplicationType(
     (state) => state,
   );
-  const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
+  const matrixSize = useMatrixSizeStore((state) => state.matrixSize);
   const started = useStartedStore((state) => state.started);
   const [typeScope, animate] = useAnimate(null);
+  const isMultiplicationFinished = useIsMultiplicationFinished(
+    (state) => state.isMultiplicationFinished,
+  );
 
   useEffect(() => {
     const matrixSizeElement = document.getElementById("matrixSizeHeader");
-    const matrixSizeXOffset =
-      matrixSizeElement.getBoundingClientRect().left;
+    const matrixSizeXOffset = matrixSizeElement.getBoundingClientRect().left;
     const standardButtonElement = document.getElementById(
       "standardButtonHeader",
     );
     const standardButtonXOffset =
       standardButtonElement.getBoundingClientRect().left;
-    if (started === true && matrixSize === 'small') {
+    if (started === true && matrixSize === "small") {
       const typeHeaderAnimation = async () => {
         await animate(
           typeScope.current,
@@ -168,8 +191,8 @@ function MultiplicationType() {
         );
       };
       typeHeaderAnimation();
-    }else if(started == false && matrixSize === 'small'){
-      const reverseTypeHeaderAnimation = async()=>{
+    } else if (started == false && matrixSize === "small") {
+      const reverseTypeHeaderAnimation = async () => {
         await animate(
           ".strassenType",
           { y: 0 },
@@ -190,23 +213,27 @@ function MultiplicationType() {
           { opacity: 1 },
           { duration: 0.5, ease: "easeInOut" },
         );
-
-      }
-      reverseTypeHeaderAnimation()
+      };
+      reverseTypeHeaderAnimation();
     }
-  }, [typeScope, animate, started,matrixSize]);
+  }, [typeScope, animate, started, matrixSize]);
 
   return (
     <div ref={typeScope} className="flex justify-center  gap-[90px]">
       <div
         onClick={() => {
+          if (isMultiplicationFinished || started) return;
           if (multiplicationType !== "standard") {
             setMultiplicationType("standard");
           }
         }}
         id="standardButtonHeader"
         className={`standardType flex items-center gap-[20px]
-          ${multiplicationType === "standard" ? "cursor-default" : "cursor-pointer"} 
+          ${
+            multiplicationType === "strassen" &&
+            (isMultiplicationFinished === true || started === true) ?
+            "opacity-20 cursor-default":'cursor-pointer'
+          } 
       `}
       >
         <img src={smallBracket} alt="" />
@@ -223,13 +250,17 @@ function MultiplicationType() {
       </div>
       <div
         onClick={() => {
+          if (isMultiplicationFinished || started) return;
           if (multiplicationType !== "strassen") {
             setMultiplicationType("strassen");
           }
-
         }}
         className={`strassenType flex items-center gap-[20px]
-          ${multiplicationType === "strassen" ? "cursor-default" : "cursor-pointer"} 
+          ${
+            multiplicationType === "standard" &&
+            (isMultiplicationFinished === true || started === true) ?
+            "opacity-20 cursor-default":'cursor-pointer'
+          } 
       
       `}
       >
@@ -249,23 +280,27 @@ function MultiplicationType() {
   );
 }
 
-function FastForwardButton({speed}) {
-  const {fastForwardSpeed,setFastForwardSpeed} = useFastForwardSpeed((state)=>state)
-  
+function FastForwardButton({ speed }) {
+  const { fastForwardSpeed, setFastForwardSpeed } = useFastForwardSpeed(
+    (state) => state,
+  );
+
   return (
     <button
-      onClick={()=>{
-        if(speed === fastForwardSpeed){
-          setFastForwardSpeed(1)
-          return
+      onClick={() => {
+        if (speed === fastForwardSpeed) {
+          setFastForwardSpeed(1);
+          return;
         }
-        setFastForwardSpeed(speed)
-
+        setFastForwardSpeed(speed);
       }}
       className={`flex h-[50px] w-[70px] cursor-pointer
             flex-col items-center justify-center 
-            ${speed === fastForwardSpeed?'bg-white text-black':
-              'border border-solid border-white text-white'}
+            ${
+              speed === fastForwardSpeed
+                ? "bg-white text-black"
+                : "border border-solid border-white text-white"
+            }
              text-[40px] tracking-[-0.1em] `}
     >
       {speed}x
@@ -273,24 +308,24 @@ function FastForwardButton({speed}) {
   );
 }
 
-function SkipButton(){
-  const {isSkipped,setIsSkipped} = useIsSkipped((state)=>state)
-  return(
-      <button
-        onClick={()=>{
-          setIsSkipped(true)
-        }}
-        className={`flex h-[50px] w-[120px] flex-col
+function SkipButton() {
+  const { isSkipped, setIsSkipped } = useIsSkipped((state) => state);
+  return (
+    <button
+      onClick={() => {
+        setIsSkipped(true);
+      }}
+      className={`flex h-[50px] w-[120px] flex-col
           items-center justify-center
-           ${isSkipped===true
-            ? "text-mainBlack bg-white"
-            : "border border-solid border-white text-white"
+           ${
+             isSkipped === true
+               ? "text-mainBlack bg-white"
+               : "border border-solid border-white text-white"
            }
-           text-[40px]
-          tracking-[-0.1em] cursor-pointer`}
-      >
-        SKIP
-      </button>
-
-)
+           cursor-pointer
+          text-[40px] tracking-[-0.1em]`}
+    >
+      SKIP
+    </button>
+  );
 }

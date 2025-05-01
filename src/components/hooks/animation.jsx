@@ -351,6 +351,7 @@ export function useStandardMatrixAnimation(
       function makeInvisibleSpanRef() {
         const matrix1 = getMatrixArray("matrix1");
         const matrix2 = getMatrixArray("matrix2");
+
         const { result, runtimeMs } = standardMultiplication(matrix1, matrix2);
         const resultDimension = result.length + "x" + result[0].length;
         setResultMatrixSize(resultDimension);
