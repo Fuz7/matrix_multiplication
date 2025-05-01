@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createMatrix } from "../../utils/matrix";
-import { useIsMultiplicationFinished, useResultExecutionTime, useResultMatrixSize, useStartedStore } from "../../utils/store";
+import { useIsMultiplicationFinished, useMultiplicationType, useResultExecutionTime, useResultMatrixSize, useStartedStore } from "../../utils/store";
 import { standardMultiplication } from "../../utils/multiplication";
 
 export function useMatrixSizeAndTypeChange(
@@ -40,6 +40,7 @@ export function useLargeMatrixStart(largeMatrix1Pos, largeMatrix2Pos) {
   const setResultMatrixSize = useResultMatrixSize((state)=>state.setResultMatrixSize)
   const setResultExecutionTime = useResultExecutionTime((state)=>state.setResultExecutionTime)
   const setIsMultiplicationFinished = useIsMultiplicationFinished((state)=>state.setIsMultiplicationFinished)
+  const multiplicationType = useMultiplicationType((state)=>state.multiplicationType)
   useEffect(() => {
     if (started) {
       const matrixWorker = new Worker(
@@ -54,7 +55,7 @@ export function useLargeMatrixStart(largeMatrix1Pos, largeMatrix2Pos) {
         Number.parseInt(largeMatrix2Pos.row),
         Number.parseInt(largeMatrix2Pos.col),
       );
-      matrixWorker.postMessage({matrix1Array,matrix2Array})
+      matrixWorker.postMessage({matrix1Array,matrix2Array,type:multiplicationType})
       matrixWorker.onmessage = (e)=>{
         const {result,runtimeMs} = e.data
         const resultDimension = result.length + "x" + result[0].length;
@@ -67,6 +68,6 @@ export function useLargeMatrixStart(largeMatrix1Pos, largeMatrix2Pos) {
         matrixWorker.terminate()
       }
     }
-  }, [largeMatrix1Pos, largeMatrix2Pos, started,setStarted,
+  }, [largeMatrix1Pos, largeMatrix2Pos, started,setStarted,multiplicationType,
     setResultExecutionTime,setResultMatrixSize,setIsMultiplicationFinished]);
 }

@@ -1,67 +1,73 @@
 export function standardMultiplication(A, B) {
-  const startTime = performance.now(); 
+  const startTime = performance.now();
 
-  const rowA = Number.parseInt(A.length)
-  const colA = Number.parseInt(A[0].length)
-  const rowB = Number.parseInt(B.length)
-  const colB = Number.parseInt(B[0].length)
-
+  const rowA = Number.parseInt(A.length);
+  const colA = Number.parseInt(A[0].length);
+  const rowB = Number.parseInt(B.length);
+  const colB = Number.parseInt(B[0].length);
 
   if (colA !== rowB) {
-    throw new Error("Matrix dimension do not match")
+    throw new Error("Matrix dimension do not match");
   }
 
-  const result = Array(rowA).fill().map(()=>Array(colB).fill(0))
+  const result = Array(rowA)
+    .fill()
+    .map(() => Array(colB).fill(0));
 
-  const steps = []
+  const steps = [];
 
-  for(let i = 0; i < rowA;i++){
-    for(let j = 0;j < colB;j++){
+  for (let i = 0; i < rowA; i++) {
+    for (let j = 0; j < colB; j++) {
       let sum = 0;
-      for(let k = 0; k < colA; k++){
-        const product = A[i][k] * B[k][j]
-        steps.push({a:{row:i,col:k},b:{row:k,col:j},type:'multiply', value:product})
-        sum+= product
+      for (let k = 0; k < colA; k++) {
+        const product = A[i][k] * B[k][j];
+        steps.push({
+          a: { row: i, col: k },
+          b: { row: k, col: j },
+          type: "multiply",
+          value: product,
+        });
+        sum += product;
       }
-      result[i][j] = sum
-      steps.push({value:sum,type:'add'})
+      result[i][j] = sum;
+      steps.push({ value: sum, type: "add" });
     }
   }
-  const endTime = performance.now(); 
+  const endTime = performance.now();
   const rawRuntimeMs = endTime - startTime;
   const runtimeMs = Number(rawRuntimeMs.toFixed(2));
-  return {result:result,steps:steps,runtimeMs:runtimeMs}
+  return { result: result, steps: steps, runtimeMs: runtimeMs };
 }
 export function largeStandardMultiplication(A, B) {
-  const startTime = performance.now(); 
+  const startTime = performance.now();
 
-  const rowA = Number.parseInt(A.length)
-  const colA = Number.parseInt(A[0].length)
-  const rowB = Number.parseInt(B.length)
-  const colB = Number.parseInt(B[0].length)
-
+  const rowA = Number.parseInt(A.length);
+  const colA = Number.parseInt(A[0].length);
+  const rowB = Number.parseInt(B.length);
+  const colB = Number.parseInt(B[0].length);
 
   if (colA !== rowB) {
-    throw new Error("Matrix dimension do not match")
+    throw new Error("Matrix dimension do not match");
   }
 
-  const result = Array(rowA).fill().map(()=>Array(colB).fill(0))
+  const result = Array(rowA)
+    .fill()
+    .map(() => Array(colB).fill(0));
 
-
-  for(let i = 0; i < rowA;i++){
-    for(let j = 0;j < colB;j++){
+  for (let i = 0; i < rowA; i++) {
+    for (let j = 0; j < colB; j++) {
       let sum = 0;
-      for(let k = 0; k < colA; k++){
-        const product = A[i][k] * B[k][j]
-        sum+= product
+      for (let k = 0; k < colA; k++) {
+        const product = A[i][k] * B[k][j];
+        sum += product;
       }
-      result[i][j] = sum
+      result[i][j] = sum;
     }
   }
-  const endTime = performance.now(); 
+  const endTime = performance.now();
   const rawRuntimeMs = endTime - startTime;
   const runtimeMs = Number(rawRuntimeMs.toFixed(2));
-  return {result:result,runtimeMs:runtimeMs}
+  return { result: result, runtimeMs: runtimeMs };
 }
 
 export function largeStrassenMultiplication(A, B) {
@@ -70,7 +76,9 @@ export function largeStrassenMultiplication(A, B) {
   const n = A.length;
 
   if (A[0].length !== n || B.length !== n || B[0].length !== n) {
-    throw new Error("Strassen requires square matrices of the same size (power of 2)");
+    throw new Error(
+      "Strassen requires square matrices of the same size (power of 2)",
+    );
   }
 
   const result = strassen(A, B);
@@ -84,7 +92,7 @@ function strassen(A, B) {
   const n = A.length;
 
   // Base case: use standard multiplication for small sizes
-  if (n <= 64) {
+  if (n <= 128) {
     return standardMultiply(A, B);
   }
 
@@ -110,7 +118,9 @@ function strassen(A, B) {
 }
 function add(A, B) {
   const n = A.length;
-  const result = Array(n).fill().map(() => Array(n));
+  const result = Array(n)
+    .fill()
+    .map(() => Array(n));
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < n; j++) {
       result[i][j] = A[i][j] + B[i][j];
@@ -121,7 +131,9 @@ function add(A, B) {
 
 function subtract(A, B) {
   const n = A.length;
-  const result = Array(n).fill().map(() => Array(n));
+  const result = Array(n)
+    .fill()
+    .map(() => Array(n));
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < n; j++) {
       result[i][j] = A[i][j] - B[i][j];
@@ -131,19 +143,33 @@ function subtract(A, B) {
 }
 
 function splitMatrix(M, size) {
-  const M11 = [], M12 = [], M21 = [], M22 = [];
+  const M11 = Array(size);
+  const M12 = Array(size);
+  const M21 = Array(size);
+  const M22 = Array(size);
+
   for (let i = 0; i < size; i++) {
-    M11.push(M[i].slice(0, size));
-    M12.push(M[i].slice(size));
-    M21.push(M[i + size].slice(0, size));
-    M22.push(M[i + size].slice(size));
+    M11[i] = Array(size);
+    M12[i] = Array(size);
+    M21[i] = Array(size);
+    M22[i] = Array(size);
+    for (let j = 0; j < size; j++) {
+      M11[i][j] = M[i][j];
+      M12[i][j] = M[i][j + size];
+      M21[i][j] = M[i + size][j];
+      M22[i][j] = M[i + size][j + size];
+    }
   }
+
   return [M11, M12, M21, M22];
 }
-
 function combine(C11, C12, C21, C22) {
   const size = C11.length;
-  const result = Array(size * 2).fill().map(() => Array(size * 2));
+  const result = Array(size * 2);
+
+  for (let i = 0; i < size * 2; i++) {
+    result[i] = Array(size * 2);
+  }
 
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
@@ -153,11 +179,14 @@ function combine(C11, C12, C21, C22) {
       result[i + size][j + size] = C22[i][j];
     }
   }
+
   return result;
 }
 function standardMultiply(A, B) {
   const n = A.length;
-  const result = Array(n).fill().map(() => Array(n).fill(0));
+  const result = Array(n)
+    .fill()
+    .map(() => Array(n).fill(0));
 
   for (let i = 0; i < n; i++) {
     for (let k = 0; k < n; k++) {
