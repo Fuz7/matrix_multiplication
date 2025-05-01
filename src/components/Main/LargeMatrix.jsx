@@ -6,6 +6,7 @@ import { useLargeStartButtonMatrixValidation } from "../hooks/validation";
 import { motion } from "motion/react";
 import { createMatrix } from "../../utils/matrix";
 import { useHeaderAnimation } from "../hooks/animation";
+import { useLargeMatrixStart } from "../hooks/main";
 export default function LargeMatrix({ inputMatrixes }) {
   const largeMatrixRef = useRef(null);
 
@@ -21,6 +22,8 @@ export default function LargeMatrix({ inputMatrixes }) {
     largeMatrix2Pos,
     setLargeMatrix2Pos,
   } = inputMatrixes;
+
+  useLargeMatrixStart(largeMatrix1Pos,largeMatrix2Pos)
 
   return (
     <main
@@ -62,8 +65,6 @@ function StartButton({ matrix1Pos, matrix2Pos }) {
     <button
       onClick={() => {
         handleStart()
-        console.log(createMatrix(
-          Number.parseInt(matrix1Pos.row),Number.parseInt(matrix1Pos.col)))
       }}
       disabled={!isEnabled}
       className={`mb-[100px] flex h-[74px] w-[250px] 
