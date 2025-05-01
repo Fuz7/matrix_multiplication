@@ -54,7 +54,7 @@ export function useLargeStartButtonMatrixValidation(matrix1Pos, matrix2Pos) {
   const handleStart = ()=>{
     if(!isEnabled) return
     
-    setStarted(true)
+    started?setStarted(false):setStarted(true)
   }  
 
   return {isEnabled,started,handleStart}

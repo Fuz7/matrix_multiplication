@@ -32,13 +32,14 @@ export default function DimensionInput({ matrixPos, setMatrixPos }) {
           const newValue = validateMatrixInput(matrixSize,multiplicationType,value)
           setMatrixPos({ ...matrixPos, row: newValue });
         }}
+        disabled={started}
         value={matrixPos.row}
         className={`${matrixSize === 'small'?'w-[30px] h-[34px]':'w-[200px] h-[75px] text-[84px] pt-[5px]'} border-b-[2px] border-white text-center`}
         type="text"
       />
       <span>x</span>
       <input
-
+        disabled={started}
         onInput={(e) => {
           const { value } = e.target;
           const newValue = validateMatrixInput(matrixSize,multiplicationType,value)

@@ -28,7 +28,7 @@ export default function Header() {
 
 function MatrixSizeSection() {
   const { matrixSize, setMatrixSize } = useMatrixSizeStore((state) => state);
-  const started = useStartedStore((state) => state.started);
+  const {started,setStarted} = useStartedStore((state) => state);
   const [sizeScope, animate] = useAnimate(null);
 
   useEffect(() => {
@@ -53,6 +53,7 @@ function MatrixSizeSection() {
       <div
         onClick={() => {
           matrixSize !== text && setMatrixSize(text);
+          setStarted(false)
         }}
         className={`h-[50px] w-[150px] tracking-[-0.05em]
         ${

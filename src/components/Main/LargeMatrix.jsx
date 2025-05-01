@@ -57,7 +57,7 @@ export default function LargeMatrix({ inputMatrixes }) {
 function StartButton({ matrix1Pos, matrix2Pos }) {
   const { isEnabled, started, handleStart } =
     useLargeStartButtonMatrixValidation(matrix1Pos, matrix2Pos);
-  useHeaderAnimation(started)
+  useHeaderAnimation()
   return (
     <button
       onClick={() => {
@@ -68,19 +68,20 @@ function StartButton({ matrix1Pos, matrix2Pos }) {
       disabled={!isEnabled}
       className={`mb-[100px] flex h-[74px] w-[250px] 
     items-center justify-center text-[64px] tracking-[-0.05em]
-    ${isEnabled && !started ? "cursor-pointer" : "cursor-default opacity-50"}
+    ${isEnabled? "cursor-pointer" : "cursor-default opacity-50"}
     border border-white`}
     >
-      START
+      {!started?"START":"STOP"}
     </button>
   );
 }
 
 function ProcessingText() {
   const dotCountArray = Array.from({ length: 3 }, (_, i) => i);
+  const started = useStartedStore((state) => state.started);
 
   return (
-    <div className="flex text-[64px] tracking-[-0.07em]">
+    <div className={`flex text-[64px] tracking-[-0.07em] ${started?'visible':'invisible'}`}>
       <div>PROCESSING</div>
       {dotCountArray.map((_, i) => {
         return (
