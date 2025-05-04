@@ -31,6 +31,9 @@ function MatrixSizeSection() {
   const isMultiplicationFinished = useIsMultiplicationFinished(
     (state) => state.isMultiplicationFinished,
   );
+  const setMultiplicationType = useMultiplicationType(
+    (state) => state.setMultiplicationType,
+  );
   const [sizeScope, animate] = useAnimate(null);
 
   useEffect(() => {
@@ -55,7 +58,12 @@ function MatrixSizeSection() {
         onClick={() => {
           if (isMultiplicationFinished || started) return;
           matrixSize !== text && setMatrixSize(text);
-          setStarted(false);
+          if (text === "small") {
+            setStarted(false);
+            setMultiplicationType("standard");
+          }else{
+            setStarted(false);
+          }
         }}
         className={`h-[50px] w-[150px] tracking-[-0.05em]
         ${
@@ -63,9 +71,12 @@ function MatrixSizeSection() {
             ? "text-mainBlack bg-white"
             : "border border-solid border-white text-white"
         }
-          ${matrixSize !== text 
-            && (isMultiplicationFinished === true || started === true) 
-            ? "opacity-20 cursor-default":'cursor-pointer'} 
+          ${
+            matrixSize !== text &&
+            (isMultiplicationFinished === true || started === true)
+              ? "cursor-default opacity-20"
+              : "cursor-pointer"
+          } 
            flex items-center justify-center
         text-[40px]`}
       >
@@ -231,8 +242,9 @@ function MultiplicationType() {
         className={`standardType flex items-center gap-[20px]
           ${
             multiplicationType === "strassen" &&
-            (isMultiplicationFinished === true || started === true) ?
-            "opacity-20 cursor-default":'cursor-pointer'
+            (isMultiplicationFinished === true || started === true)
+              ? "cursor-default opacity-20"
+              : "cursor-pointer"
           } 
       `}
       >
@@ -258,9 +270,11 @@ function MultiplicationType() {
         className={`strassenType flex items-center gap-[20px]
           ${
             multiplicationType === "standard" &&
-            (isMultiplicationFinished === true || started === true) ?
-            "opacity-20 cursor-default":'cursor-pointer'
+            (isMultiplicationFinished === true || started === true)
+              ? "cursor-default opacity-20"
+              : "cursor-pointer"
           } 
+          ${matrixSize === "small" && "invisible"}
       
       `}
       >
