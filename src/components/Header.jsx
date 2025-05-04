@@ -190,11 +190,6 @@ function MultiplicationType() {
           { y: -100 },
           { duration: 1, ease: "easeInOut" },
         );
-        await animate(
-          ".strassenType",
-          { y: -100 },
-          { duration: 0.8, ease: "easeInOut" },
-        );
         animate(
           ".typeUnderline",
           { opacity: 0 },
@@ -204,11 +199,6 @@ function MultiplicationType() {
       typeHeaderAnimation();
     } else if (started == false && matrixSize === "small") {
       const reverseTypeHeaderAnimation = async () => {
-        await animate(
-          ".strassenType",
-          { y: 0 },
-          { duration: 0.8, ease: "easeInOut" },
-        );
         await animate(
           typeScope.current,
           { y: 0 },
@@ -260,6 +250,7 @@ function MultiplicationType() {
         </h3>
         <img className="rotate-180" src={smallBracket} alt="" />
       </div>
+      {matrixSize === 'large' && (
       <div
         onClick={() => {
           if (isMultiplicationFinished || started) return;
@@ -290,6 +281,8 @@ function MultiplicationType() {
         </h3>
         <img className="rotate-180" src={smallBracket} alt="" />
       </div>
+        
+      )}
     </div>
   );
 }
