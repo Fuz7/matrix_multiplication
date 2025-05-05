@@ -25,6 +25,12 @@ export function validateMatrixInput(matrixSize, matrixType, value) {
     }else if(value.length === 1){
       newValue =  ""
     }
+  }else{
+    newValue = newValue.replace(/[^0-9]/g, "");
+
+    if(Number.parseInt(newValue) > 4096){
+        newValue = "4096"; // or "" if you want to clear it
+    }
   }
 
   return newValue;
