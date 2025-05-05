@@ -61,7 +61,7 @@ function MatrixSizeSection() {
           if (text === "small") {
             setStarted(false);
             setMultiplicationType("standard");
-          }else{
+          } else {
             setStarted(false);
           }
         }}
@@ -176,19 +176,41 @@ function MultiplicationType() {
     const standardButtonElement = document.getElementById(
       "standardButtonHeader",
     );
+    const strassenButtonElement = document.getElementById(
+      "strassenButtonHeader",
+    );
     const standardButtonXOffset =
       standardButtonElement.getBoundingClientRect().left;
-    if (started === true && matrixSize === "small") {
+
+    const strassenButtonXOffset =
+      strassenButtonElement.getBoundingClientRect().left;
+    const activeButtonX =
+      multiplicationType === "standard"
+        ? standardButtonXOffset
+        : strassenButtonXOffset;
+     const inactiveButton = multiplicationType !== "standard"
+        ? standardButtonElement
+        : strassenButtonElement;
+    
+    if (
+      started === true &&
+      matrixSize === "small" 
+       ) {
       const typeHeaderAnimation = async () => {
         await animate(
           typeScope.current,
-          { x: matrixSizeXOffset - standardButtonXOffset },
+          { x: matrixSizeXOffset - activeButtonX },
           { delay: 1, duration: 1, ease: "easeInOut" },
         );
         await animate(
           typeScope.current,
           { y: -100 },
           { duration: 1, ease: "easeInOut" },
+        );
+        await animate(
+          inactiveButton,
+          { y: -100 },
+          { duration: 0.8, ease: "easeInOut" },
         );
         animate(
           ".typeUnderline",
@@ -197,8 +219,16 @@ function MultiplicationType() {
         );
       };
       typeHeaderAnimation();
-    } else if (started == false && matrixSize === "small") {
+    } else if (
+      started == false &&
+      matrixSize === "small"  
+      ) {
       const reverseTypeHeaderAnimation = async () => {
+        await animate(
+          inactiveButton,
+          { y: 0 },
+          { duration: 0.8, ease: "easeInOut" },
+        );
         await animate(
           typeScope.current,
           { y: 0 },
@@ -209,6 +239,7 @@ function MultiplicationType() {
           { x: 0 },
           { delay: 1, duration: 1, ease: "easeInOut" },
         );
+
         animate(
           ".typeUnderline",
           { opacity: 1 },
@@ -217,7 +248,7 @@ function MultiplicationType() {
       };
       reverseTypeHeaderAnimation();
     }
-  }, [typeScope, animate, started, matrixSize]);
+  }, [typeScope, animate, started, matrixSize, multiplicationType]);
 
   return (
     <div ref={typeScope} className="flex justify-center  gap-[90px]">
@@ -250,7 +281,7 @@ function MultiplicationType() {
         </h3>
         <img className="rotate-180" src={smallBracket} alt="" />
       </div>
-      {matrixSize === 'large' && (
+
       <div
         onClick={() => {
           if (isMultiplicationFinished || started) return;
@@ -258,6 +289,7 @@ function MultiplicationType() {
             setMultiplicationType("strassen");
           }
         }}
+        id="strassenButtonHeader"
         className={`strassenType flex items-center gap-[20px]
           ${
             multiplicationType === "standard" &&
@@ -265,7 +297,7 @@ function MultiplicationType() {
               ? "cursor-default opacity-20"
               : "cursor-pointer"
           } 
-          ${matrixSize === "small" && "invisible"}
+
       
       `}
       >
@@ -281,8 +313,6 @@ function MultiplicationType() {
         </h3>
         <img className="rotate-180" src={smallBracket} alt="" />
       </div>
-        
-      )}
     </div>
   );
 }
