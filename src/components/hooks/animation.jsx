@@ -5,13 +5,14 @@ import {
   getMatrixArrayAttributesAndContainer,
   setMatrixInputFrom2dArray,
 } from "../../utils/array";
-import { standardMultiplication } from "../../utils/multiplication";
+import { standardMultiplication, strassenMultiplicationWithSteps } from "../../utils/multiplication";
 import { delayInMs, getIsSkipped, getSpeed } from "../../utils/time";
 import { getMatrixSpan, setTranslate } from "../../utils/element";
 import { animate } from "motion";
 import {
   useIsResultButtonVisible,
   useMatrixSizeStore,
+  useMultiplicationType,
   useResultExecutionTime,
   useResultMatrixSize,
   useStartedStore,
@@ -55,7 +56,7 @@ export function useStandardMatrixAnimation(
     (state) => state.setResultExecutionTime,
   );
   const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
-
+  const multiplicationType = useMultiplicationType((state)=>state.multiplicationType)
   const animateMatrixNumbers = useCallback(
     async (result, steps) => {
       const matrix1 = document.getElementById("matrix1");
@@ -388,11 +389,16 @@ export function useStandardMatrixAnimation(
         setMatrixPositioned(true);
       };
       fadeOutOutputMatrix();
-    } else if (matrixPositioned === true && matrixSize ==='small') {
+    } else if (matrixPositioned === true && matrixSize ==='small' && multiplicationType === 'standard') {
       const matrix1 = getMatrixArray("matrix1");
       const matrix2 = getMatrixArray("matrix2");
       const { result, steps } = standardMultiplication(matrix1, matrix2);
       animateMatrixNumbers(result, steps);
+    }else if(matrixPositioned === true && matrixSize === "small" && multiplicationType === "strassen"){
+      const matrix1 = getMatrixArray("matrix1");
+      const matrix2 = getMatrixArray("matrix2");
+      const { result, steps } = strassenMultiplicationWithSteps(matrix1, matrix2);
+      console.log(result,steps)
     }
   }, [
     started,
@@ -403,7 +409,8 @@ export function useStandardMatrixAnimation(
     animateMatrixNumbers,
     setResultExecutionTime,
     setResultMatrixSize,
-    matrixSize
+    matrixSize,
+    multiplicationType
   ]);
 
   return { outputMatrixScope, invisibleSpanRef, matrixPositioned };
