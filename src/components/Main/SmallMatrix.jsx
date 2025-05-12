@@ -1,14 +1,14 @@
-import { useStartedStore } from "../../utils/store";
+import { useMultiplicationType, useStartedStore } from "../../utils/store";
 import DimensionInput from "./DimensionInput";
 import Matrix from "./Matrix";
 import multiplicationSymbol from "@images/multiplicationSymbol.svg";
 import animatingMultSymbol from "@images/animatingMultSymbol.svg";
 import equalSymbol from "@images/equalSymbol.svg";
-import { useSmallStartButtonMatrixValidation} from "../hooks/validation";
+import { useSmallStartButtonMatrixValidation } from "../hooks/validation";
 import {
   useHeaderAnimation,
+  useSmallMatrixAnimation,
   useSmallStartButtonAnimation,
-  useStandardMatrixAnimation,
 } from "../hooks/animation";
 import { createPortal } from "react-dom";
 import {
@@ -18,53 +18,61 @@ import {
   InvisibleSumSpan,
 } from "./Animation";
 import { useEffect } from "react";
+import plusSign from "@images/plusSign.svg";
 
 export default function SmallMatrix({ inputMatrixes }) {
-  const  {
+  const {
     smallMatrix1Pos,
     setSmallMatrix1Pos,
     smallMatrix2Pos,
     setSmallMatrix2Pos,
-  } = inputMatrixes
-  const started = useStartedStore((state) => state.started);
+  } = inputMatrixes;
   const { multMatrixScope, animateMult } = useHeaderAnimation();
   const { outputMatrixScope, invisibleSpanRef, matrixPositioned } =
-    useStandardMatrixAnimation(started, multMatrixScope, animateMult);
+    useSmallMatrixAnimation(multMatrixScope, animateMult);
   const invisibleProducts = Array.from(
     { length: Number.parseInt(smallMatrix1Pos.col) },
     (_, i) => i + 1,
   );
+  const multiplicationType = useMultiplicationType(
+    (state) => state.multiplicationType,
+  );
 
   const invisiblePlusSign = Array.from(
-    { length: Number.parseInt(smallMatrix1Pos.col - 1) },
+    { length: Number.parseInt(smallMatrix1Pos.col) },
     (_, i) => i + 1,
   );
 
-  useEffect(()=>{
+  useEffect(() => {
     setTimeout(() => {
-      multMatrixScope.current.style.visibility = "visible"
+      multMatrixScope.current.style.visibility = "visible";
     }, 50);
-  },[multMatrixScope])
+  }, [multMatrixScope]);
 
   return (
-    <div 
-    className="flex min-w-[100%] relative flex-col items-center gap-[45px]">
+    <div className="relative flex min-w-[100%] flex-col items-center gap-[45px]">
       <div
         style={{
-          visibility:'hidden'
+          visibility: "hidden",
         }}
         ref={multMatrixScope}
-        className="mt-[40px] flex items-center justify-center gap-[50px]"
+        className="relative mt-[40px] flex items-center justify-center gap-[50px]"
       >
         <div className="flex flex-col gap-[30px]">
-          <div className="flex h-[300px] w-[360px] flex-col items-center justify-center">
+          <div
+            className="relative flex h-[300px] w-[360px] 
+          flex-col items-center justify-center"
+          >
             <Matrix
               row={smallMatrix1Pos.row}
               column={smallMatrix1Pos.col}
               id={"matrix1"}
             ></Matrix>
           </div>
-          <DimensionInput matrixPos={smallMatrix1Pos} setMatrixPos={setSmallMatrix1Pos} />
+          <DimensionInput
+            matrixPos={smallMatrix1Pos}
+            setMatrixPos={setSmallMatrix1Pos}
+          />
         </div>
         <div className="relative">
           <img
@@ -76,7 +84,11 @@ export default function SmallMatrix({ inputMatrixes }) {
           <div
             id="animatingMultSymbol"
             style={{
-              top: `-${160 + Number.parseInt(smallMatrix1Pos.row) * 20}px`,
+              top: `-${
+                multiplicationType === "standard"
+                  ? 160 + Number.parseInt(smallMatrix1Pos.row) * 20
+                  : "150"
+              }px`,
             }}
             className="absolute left-1/2 flex 
             aspect-square w-[50px] origin-center -translate-x-1/2
@@ -93,7 +105,10 @@ export default function SmallMatrix({ inputMatrixes }) {
               id={"matrix2"}
             ></Matrix>
           </div>
-          <DimensionInput matrixPos={smallMatrix2Pos} setMatrixPos={setSmallMatrix2Pos} />
+          <DimensionInput
+            matrixPos={smallMatrix2Pos}
+            setMatrixPos={setSmallMatrix2Pos}
+          />
         </div>
       </div>
       <StartButton matrix1Pos={smallMatrix1Pos} matrix2Pos={smallMatrix2Pos} />
@@ -140,10 +155,8 @@ export default function SmallMatrix({ inputMatrixes }) {
 }
 
 function StartButton({ matrix1Pos, matrix2Pos }) {
-  const { isEnabled, started, handleStart } = useSmallStartButtonMatrixValidation(
-    matrix1Pos,
-    matrix2Pos,
-  );
+  const { isEnabled, started, handleStart } =
+    useSmallStartButtonMatrixValidation(matrix1Pos, matrix2Pos);
   const startButtonScope = useSmallStartButtonAnimation(started);
 
   return (

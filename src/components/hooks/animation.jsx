@@ -5,7 +5,10 @@ import {
   getMatrixArrayAttributesAndContainer,
   setMatrixInputFrom2dArray,
 } from "../../utils/array";
-import { standardMultiplication, strassenMultiplicationWithSteps } from "../../utils/multiplication";
+import {
+  standardMultiplication,
+  strassenMultiplicationWithSteps,
+} from "../../utils/multiplication";
 import { delayInMs, getIsSkipped, getSpeed } from "../../utils/time";
 import { getMatrixSpan, setTranslate } from "../../utils/element";
 import { animate } from "motion";
@@ -20,9 +23,9 @@ import {
 
 export function useSmallStartButtonAnimation(started) {
   const [startButtonScope, animate] = useAnimate(null);
-  const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
-  useEffect(() => { 
-    if (started === true && matrixSize === 'small') {
+  const matrixSize = useMatrixSizeStore((state) => state.matrixSize);
+  useEffect(() => {
+    if (started === true && matrixSize === "small") {
       const animateStartButton = async () => {
         await animate(
           startButtonScope.current,
@@ -34,18 +37,15 @@ export function useSmallStartButtonAnimation(started) {
       };
       animateStartButton();
     }
-  },[started,matrixSize,animate,startButtonScope]);
+  }, [started, matrixSize, animate, startButtonScope]);
   return startButtonScope;
 }
 
-export function useStandardMatrixAnimation(
-  started,
-  multMatrixScope,
-  animateMult,
-) {
+export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
   const setIsResultVisible = useIsResultButtonVisible(
     (state) => state.setIsResultVisible,
   );
+  const started = useStartedStore((state) => state.started);
   const [outputMatrixScope, animateOutput] = useAnimate(null);
   const [matrixPositioned, setMatrixPositioned] = useState(false);
   const invisibleSpanRef = useRef([]);
@@ -55,9 +55,11 @@ export function useStandardMatrixAnimation(
   const setResultExecutionTime = useResultExecutionTime(
     (state) => state.setResultExecutionTime,
   );
-  const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
-  const multiplicationType = useMultiplicationType((state)=>state.multiplicationType)
-  const animateMatrixNumbers = useCallback(
+  const matrixSize = useMatrixSizeStore((state) => state.matrixSize);
+  const multiplicationType = useMultiplicationType(
+    (state) => state.multiplicationType,
+  );
+  const animateStandardMatrixNumbers = useCallback(
     async (result, steps) => {
       const matrix1 = document.getElementById("matrix1");
       const matrix2 = document.getElementById("matrix2");
@@ -336,7 +338,7 @@ export function useStandardMatrixAnimation(
           x = (1 + x) % result[0].length;
 
           orderNumber = 1;
-          if(getIsSkipped())break
+          if (getIsSkipped()) break;
         }
       }
       if (getIsSkipped) {
@@ -347,8 +349,65 @@ export function useStandardMatrixAnimation(
     [animateMult, setIsResultVisible],
   );
 
+  const animateStrassenMatrixNumbers = useCallback(
+    async (result, steps) => {
+      const matrix1 = document.getElementById("matrix1");
+      const matrix2 = document.getElementById("matrix2");
+      const outputMatrix = document.getElementById("outputMatrix");
+      const outputMatrixDimension = outputMatrix.getBoundingClientRect();
+      const matrix1Dimension = matrix1.getBoundingClientRect();
+      const matrix2Dimension = matrix2.getBoundingClientRect();
+      const matrix1CenterPos = matrix1Dimension.x + matrix1Dimension.width / 2;
+      const matrix2CenterPos = matrix2Dimension.x + matrix2Dimension.width / 2;
+      const outputMatrixCenterPos =
+        outputMatrixDimension.x + outputMatrixDimension.width / 2;
+      const gap = 15;
+      const plusWidth = 16;
+      const spanWidth = 35;
+      for (const step of steps) {
+        if (
+          step.status === "setup" &&
+          (step.type === "add" || step.type === "subtract")
+        ) {
+          const firstSpan =
+            step.matrix === "a"
+              ? getMatrixSpan(matrix1, step.a)
+              : getMatrixSpan(matrix2, step.a);
+          const secondSpan =
+            step.matrix === "a"
+              ? getMatrixSpan(matrix1, step.b)
+              : getMatrixSpan(matrix2, step.b); 
+          const sumWidth = spanWidth * 2 + gap * 2 + plusWidth + 10;
+          const startX =
+            step.matrix === "a"
+              ? matrix1CenterPos - sumWidth / 2
+              : matrix2CenterPos - sumWidth / 2;
+          const firstSpanDimension = firstSpan.getBoundingClientRect()
+          const secondSpanDimension = secondSpan.getBoundingClientRect()
+          const firstSpanX =   firstSpanDimension.x - startX
+          const secondSpanX = secondSpanDimension.x - (startX + (spanWidth + gap * 2 + plusWidth))
+          const mathSign = document.getElementsByClassName('plus')[0]
+          const mathSignX = firstSpanX + spanWidth + gap + startX 
+          const mathSignY = matrix1Dimension.y - 66
+          await delayInMs(1);
+          await animate(mathSign,
+            {x:(mathSignX),y:(matrix1Dimension.y - 50),},{duration:0.001})
+          await animateMult(firstSpan, { x: (firstSpanX),y:(mathSignY - firstSpanDimension.y) }, { duration: 0.5 });
+          await animate(mathSign,{opacity:1},{duration:0.2})
+          await animateMult(secondSpan, { x: (secondSpanX),y:(mathSignY - secondSpanDimension.y) }, { duration: 0.5 });
+          break;
+        }
+      }
+    },
+    [animateMult],
+  );
+
   useEffect(() => {
-    if (started === true && matrixPositioned === false && matrixSize === 'small') {
+    if (
+      started === true &&
+      matrixPositioned === false &&
+      matrixSize === "small"
+    ) {
       function makeInvisibleSpanRef() {
         const matrix1 = getMatrixArray("matrix1");
         const matrix2 = getMatrixArray("matrix2");
@@ -389,16 +448,28 @@ export function useStandardMatrixAnimation(
         setMatrixPositioned(true);
       };
       fadeOutOutputMatrix();
-    } else if (matrixPositioned === true && matrixSize ==='small' && multiplicationType === 'standard') {
+    } else if (
+      matrixPositioned === true &&
+      matrixSize === "small" &&
+      multiplicationType === "standard"
+    ) {
       const matrix1 = getMatrixArray("matrix1");
       const matrix2 = getMatrixArray("matrix2");
       const { result, steps } = standardMultiplication(matrix1, matrix2);
-      animateMatrixNumbers(result, steps);
-    }else if(matrixPositioned === true && matrixSize === "small" && multiplicationType === "strassen"){
+      animateStandardMatrixNumbers(result, steps);
+    } else if (
+      matrixPositioned === true &&
+      matrixSize === "small" &&
+      multiplicationType === "strassen"
+    ) {
       const matrix1 = getMatrixArray("matrix1");
       const matrix2 = getMatrixArray("matrix2");
-      const { result, steps } = strassenMultiplicationWithSteps(matrix1, matrix2);
-      console.log(result,steps)
+      const { result, steps } = strassenMultiplicationWithSteps(
+        matrix1,
+        matrix2,
+      );
+      animateStrassenMatrixNumbers(result, steps);
+      console.log(result, steps);
     }
   }, [
     started,
@@ -406,11 +477,12 @@ export function useStandardMatrixAnimation(
     outputMatrixScope,
     multMatrixScope,
     matrixPositioned,
-    animateMatrixNumbers,
+    animateStandardMatrixNumbers,
+    animateStrassenMatrixNumbers,
     setResultExecutionTime,
     setResultMatrixSize,
     matrixSize,
-    multiplicationType
+    multiplicationType,
   ]);
 
   return { outputMatrixScope, invisibleSpanRef, matrixPositioned };
@@ -419,9 +491,9 @@ export function useStandardMatrixAnimation(
 export function useHeaderAnimation() {
   const started = useStartedStore((state) => state.started);
   const [multMatrixScope, animateMult] = useAnimate(null);
-  const matrixSize = useMatrixSizeStore((state)=>state.matrixSize)
+  const matrixSize = useMatrixSizeStore((state) => state.matrixSize);
   useEffect(() => {
-    if (started === true && matrixSize === 'small') {
+    if (started === true && matrixSize === "small") {
       const matrixSizeElement = document.getElementById("matrixSizeHeader");
       const matrixSizeXOffset = matrixSizeElement.getBoundingClientRect().left;
       const multMatrixScopeXOffset =
@@ -433,7 +505,7 @@ export function useHeaderAnimation() {
         { duration: 0.7, ease: "easeOut", delay: 4 },
       );
     }
-  }, [started, animateMult, multMatrixScope,matrixSize  ]);
+  }, [started, animateMult, multMatrixScope, matrixSize]);
 
   return { multMatrixScope, animateMult };
 }

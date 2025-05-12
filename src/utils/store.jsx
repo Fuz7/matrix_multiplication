@@ -16,7 +16,8 @@ export const useStartedStore = create((set) => {
 
 export const useMultiplicationType = create((set) => {
   return {
-    multiplicationType: "standard",
+    // multiplicationType: "standard",
+    multiplicationType: "strassen",
     setMultiplicationType: (type) => set({ multiplicationType: type }),
   };
 });
