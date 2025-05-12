@@ -367,7 +367,7 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
       for (const step of steps) {
         if (
           step.status === "setup" &&
-          (step.type === "add" || step.type === "subtract")
+          (step.type === 'add' && step.type === "subtract")
         ) {
           const firstSpan =
             step.matrix === "a"
@@ -376,25 +376,52 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
           const secondSpan =
             step.matrix === "a"
               ? getMatrixSpan(matrix1, step.b)
-              : getMatrixSpan(matrix2, step.b); 
+              : getMatrixSpan(matrix2, step.b);
           const sumWidth = spanWidth * 2 + gap * 2 + plusWidth + 10;
           const startX =
             step.matrix === "a"
               ? matrix1CenterPos - sumWidth / 2
               : matrix2CenterPos - sumWidth / 2;
-          const firstSpanDimension = firstSpan.getBoundingClientRect()
-          const secondSpanDimension = secondSpan.getBoundingClientRect()
-          const firstSpanX =   firstSpanDimension.x - startX
-          const secondSpanX = secondSpanDimension.x - (startX + (spanWidth + gap * 2 + plusWidth))
-          const mathSign = document.getElementsByClassName('plus')[0]
-          const mathSignX = firstSpanX + spanWidth + gap + startX 
-          const mathSignY = matrix1Dimension.y - 66
+          const firstSpanDimension = firstSpan.getBoundingClientRect();
+          const secondSpanDimension = secondSpan.getBoundingClientRect();
+          const firstSpanX = firstSpanDimension.x - startX;
+          const secondSpanX =
+            secondSpanDimension.x -
+            (startX + (spanWidth + gap * 2 + plusWidth));
+          const mathSign =
+            step.type === "add"
+              ? document.getElementsByClassName("plus")[0]
+              : document.getElementsByClassName("minus")[0];
+          const mathSignX = firstSpanX + spanWidth + gap + startX;
+          const mathSignY = step.type === 'add'? matrix1Dimension.y - 66 : 
+          matrix1Dimension.y - 70
+          const firstSpanY = mathSignY - firstSpanDimension.y;
+          const secondSpanY = mathSignY - secondSpanDimension.y;
           await delayInMs(1);
-          await animate(mathSign,
-            {x:(mathSignX),y:(matrix1Dimension.y - 50),},{duration:0.001})
-          await animateMult(firstSpan, { x: (firstSpanX),y:(mathSignY - firstSpanDimension.y) }, { duration: 0.5 });
-          await animate(mathSign,{opacity:1},{duration:0.2})
-          await animateMult(secondSpan, { x: (secondSpanX),y:(mathSignY - secondSpanDimension.y) }, { duration: 0.5 });
+          await animate(
+            mathSign,
+            { x: mathSignX, y: matrix1Dimension.y - 50 },
+            { duration: 0.001 },
+          );
+          animateMult(firstSpan, { x: -120 }, { duration: 0.5 });
+          await animateMult(secondSpan, { x: 120 }, { duration: 0.5 });
+          animateMult(firstSpan, { x: -120, y: firstSpanY }, { duration: 0.5 });
+          await animateMult(
+            secondSpan,
+            { x: 120, y: secondSpanY },
+            { duration: 0.5 },
+          );
+          animateMult(
+            firstSpan,
+            { x: firstSpanX, y: firstSpanY },
+            { duration: 0.5 },
+          );
+          animateMult(
+            secondSpan,
+            { x: secondSpanX, y: secondSpanY },
+            { duration: 0.5 },
+          );
+          animate(mathSign, { opacity: 1 }, { duration: 0.2 });
           break;
         }
       }

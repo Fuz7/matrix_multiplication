@@ -13,6 +13,7 @@ import {
 import { createPortal } from "react-dom";
 import {
   InvisibleMatrixInputSpan,
+  InvisibleMinusSign,
   InvisiblePlusSign,
   InvisibleProductSpan,
   InvisibleSumSpan,
@@ -48,7 +49,7 @@ export default function SmallMatrix({ inputMatrixes }) {
       multMatrixScope.current.style.visibility = "visible";
     }, 50);
   }, [multMatrixScope]);
-
+  
   return (
     <div className="relative flex min-w-[100%] flex-col items-center gap-[45px]">
       <div
@@ -146,6 +147,13 @@ export default function SmallMatrix({ inputMatrixes }) {
         invisiblePlusSign.map((order) => {
           return createPortal(
             <InvisiblePlusSign order={order} />,
+            document.body,
+          );
+        })}
+      {matrixPositioned && multiplicationType === 'strassen' &&
+        invisiblePlusSign.map((order) => {
+          return createPortal(
+            <InvisibleMinusSign order={order} />,
             document.body,
           );
         })}

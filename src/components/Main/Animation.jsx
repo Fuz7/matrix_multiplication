@@ -1,4 +1,5 @@
 import plusSign from '@images/plusSign.svg'
+import minusSign from '@images/minusSign.svg'
 import { motion } from 'motion/react';
 
 export function InvisibleMatrixInputSpan({ dataCol, dataRow, value }) {
@@ -40,6 +41,21 @@ export function InvisiblePlusSign({order}){
       <img
       className='w-[16px]'
        src={plusSign} alt="" />
+
+    </motion.div>
+  )
+}
+
+export function InvisibleMinusSign({order}){
+  return(
+    <motion.div
+    data-order={order}
+    className="absolute top-0 left-0 flex justify-center
+    items-center minus opacity-0"
+    >
+      <img
+      className='w-[16px]'
+       src={minusSign} alt="" />
 
     </motion.div>
   )
