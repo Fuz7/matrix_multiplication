@@ -246,7 +246,7 @@ function strassenRecursive(A, B, steps) {
     a: { row: 0, col: 0 },
     b: { row: 1, col: 1 },
     value: A11 + A22,
-    order:1,
+    order: 1,
   });
   steps.push({
     status: "setup",
@@ -255,9 +255,9 @@ function strassenRecursive(A, B, steps) {
     a: { row: 1, col: 0 },
     b: { row: 1, col: 1 },
     value: B11 + B22,
-    order:2,
+    order: 2,
   });
-  steps.push({ status: "setup", type: "combine", value: m1,order:1 });
+  steps.push({ status: "setup", type: "combine", value: m1, order: 1 });
   steps.push({
     status: "setup",
     type: "add",
@@ -265,7 +265,7 @@ function strassenRecursive(A, B, steps) {
     a: { row: 1, col: 0 },
     b: { row: 1, col: 1 },
     value: A21 + A22,
-    order:1,
+    order: 1,
   });
   steps.push({
     status: "setup",
@@ -273,16 +273,16 @@ function strassenRecursive(A, B, steps) {
     matrix: "b",
     a: { row: 0, col: 0 },
     value: B11,
-    order:2,
+    order: 2,
   });
-  steps.push({ status: "setup", type: "combine", value: m2,order:2 });
+  steps.push({ status: "setup", type: "combine", value: m2, order: 2 });
   steps.push({
     status: "setup",
     type: "standby",
     matrix: "a",
     a: { row: 0, col: 0 },
     value: A11,
-    order:1
+    order: 1,
   });
   steps.push({
     status: "setup",
@@ -291,16 +291,16 @@ function strassenRecursive(A, B, steps) {
     a: { row: 1, col: 0 },
     b: { row: 1, col: 1 },
     value: B12 - B22,
-    order:2
+    order: 2,
   });
-  steps.push({ status: "setup", type: "combine", value: m3,order:3 });
+  steps.push({ status: "setup", type: "combine", value: m3, order: 3 });
   steps.push({
     status: "setup",
     type: "standby",
     matrix: "a",
     a: { row: 1, col: 1 },
     value: A22,
-    order:1,
+    order: 1,
   });
   steps.push({
     status: "setup",
@@ -309,9 +309,9 @@ function strassenRecursive(A, B, steps) {
     a: { row: 1, col: 0 },
     b: { row: 0, col: 0 },
     value: B21 - B11,
-    order:2
+    order: 2,
   });
-  steps.push({ status: "setup", type: "combine", value: m4,order:4 });
+  steps.push({ status: "setup", type: "combine", value: m4, order: 4 });
   steps.push({
     status: "setup",
     type: "add",
@@ -319,7 +319,7 @@ function strassenRecursive(A, B, steps) {
     a: { row: 0, col: 0 },
     b: { row: 0, col: 1 },
     value: A11 + A12,
-    order:1
+    order: 1,
   });
   steps.push({
     status: "setup",
@@ -327,9 +327,9 @@ function strassenRecursive(A, B, steps) {
     matrix: "b",
     a: { row: 1, col: 1 },
     value: B22,
-    order:2
+    order: 2,
   });
-  steps.push({ status: "setup", type: "combine", value: m5,order:5 });
+  steps.push({ status: "setup", type: "combine", value: m5, order: 5 });
   steps.push({
     status: "setup",
     type: "subtract",
@@ -337,7 +337,7 @@ function strassenRecursive(A, B, steps) {
     a: { row: 1, col: 0 },
     b: { row: 0, col: 0 },
     value: A21 - A11,
-    order:1
+    order: 1,
   });
   steps.push({
     status: "setup",
@@ -346,9 +346,9 @@ function strassenRecursive(A, B, steps) {
     a: { row: 0, col: 0 },
     b: { row: 0, col: 1 },
     value: B11 + B12,
-    order:2
+    order: 2,
   });
-  steps.push({ status: "setup", type: "combine", value: m6,order:6 });
+  steps.push({ status: "setup", type: "combine", value: m6, order: 6 });
   steps.push({
     status: "setup",
     type: "subtract",
@@ -356,7 +356,7 @@ function strassenRecursive(A, B, steps) {
     a: { row: 0, col: 1 },
     b: { row: 1, col: 1 },
     value: A12 - A22,
-    order:1
+    order: 1,
   });
   steps.push({
     status: "setup",
@@ -365,22 +365,33 @@ function strassenRecursive(A, B, steps) {
     a: { row: 1, col: 0 },
     b: { row: 1, col: 1 },
     value: B21 + B22,
-    order:2
+    order: 2,
   });
-  steps.push({ status: "setup", type: "combine", value: m7,order:7 });
-  steps.push({ status: "output", type: "add", a: "1", b: "4" });
+  steps.push({ status: "setup", type: "combine", value: m7, order: 7 });
+  steps.push({ status: "output", type: "first", a: "1" }); // first step
+
+  steps.push({ status: "output", type: "add", a: "4" });
   steps.push({ status: "output", type: "subtract", a: "5" });
   steps.push({ status: "output", type: "add", a: "7" });
-  steps.push({ status: "output", type: "combine", value: m1 + m4 - m5 + m7 });
-  steps.push({ status: "output", type: "add", a: "3", b: "5" });
-  steps.push({ status: "output", type: "combine", value: m3 + m5 });
-  steps.push({ status: "output", type: "add", a: "2", b: "4" });
-  steps.push({ status: "output", type: "combine", value: m2 + m4 });
-  steps.push({ status: "output", type: "subtract", a: "1", b: "2" });
+  steps.push({ status: "output", a:{row:0,col:0},type: "combine", value: m1 + m4 - m5 + m7 });
+
+  // Previously: add a=3, b=5 → now split into two add steps
+  steps.push({ status: "output", type: "first", a: "3" });
+  steps.push({ status: "output", type: "add", a: "5" });
+  steps.push({ status: "output", a:{row:0,col:1} ,type: "combine", value: m3 + m5 });
+
+  // Previously: add a=2, b=4
+  steps.push({ status: "output", type: "first", a: "2" });
+  steps.push({ status: "output", type: "add", a: "4" });
+  steps.push({ status: "output", a:{row:1,col:0} , type: "combine", value: m2 + m4 });
+
+  // Previously: subtract a=1, b=2
+  steps.push({ status: "output", type: "first", a: "1" });
+  steps.push({ status: "output", type: "subtract", a: "2" });
+
   steps.push({ status: "output", type: "add", a: "3" });
   steps.push({ status: "output", type: "add", a: "6" });
-  steps.push({ status: "output", type: "combine", value: m1 - m2 + m3 + m6 });
-
+  steps.push({ status: "output", a:{row:1,col:1} ,type: "combine", value: m1 - m2 + m3 + m6 });
   if (n <= 2) {
     return standardMultiplyWithSteps(A, B);
   }

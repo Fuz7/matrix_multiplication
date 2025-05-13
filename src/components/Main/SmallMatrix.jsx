@@ -1,4 +1,4 @@
-import { useMultiplicationType, useStartedStore } from "../../utils/store";
+import { useIsResultButtonVisible, useMultiplicationType, useStartedStore } from "../../utils/store";
 import DimensionInput from "./DimensionInput";
 import Matrix from "./Matrix";
 import multiplicationSymbol from "@images/multiplicationSymbol.svg";
@@ -33,6 +33,7 @@ export default function SmallMatrix({ inputMatrixes }) {
   const { multMatrixScope, animateMult } = useHeaderAnimation();
   const { outputMatrixScope, invisibleSpanRef, matrixPositioned } =
     useSmallMatrixAnimation(multMatrixScope, animateMult);
+  const isResultVisible = useIsResultButtonVisible((state)=>state.isResultVisible)
   const invisibleProducts = Array.from(
     { length: Number.parseInt(smallMatrix1Pos.col) },
     (_, i) => i + 1,
@@ -146,7 +147,8 @@ export default function SmallMatrix({ inputMatrixes }) {
               document.body,
             );
           })
-        : invisibleStrassenProducts.map((order) => {
+        : isResultVisible === false && 
+        invisibleStrassenProducts.map((order) => {
             return createPortal(
               <InvisibleProductStrassenSpan order={order} />,
               document.body,

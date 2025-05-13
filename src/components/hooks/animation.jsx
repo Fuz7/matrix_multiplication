@@ -20,7 +20,7 @@ import {
   useResultMatrixSize,
   useStartedStore,
 } from "../../utils/store";
-import { a, span } from "motion/react-client";
+import { a, span, symbol } from "motion/react-client";
 
 export function useSmallStartButtonAnimation(started) {
   const [startButtonScope, animate] = useAnimate(null);
@@ -76,7 +76,6 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
       let x = 0;
       let y = 0;
       let orderNumber = 1;
-
       for (const step of steps) {
         await animateMult(
           animatingMultSymbol,
@@ -252,7 +251,7 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
           const invisibleSumDimension = invisibleSum.getBoundingClientRect();
           const previousProduct = document.querySelector(
             `.product[data-order="1"]`,
-          );
+          ) ;
           const previousProductDimension =
             previousProduct.getBoundingClientRect();
           const invisibleSumXPos =
@@ -333,6 +332,7 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
             invisibleSum,
             { x: [invisibleSumXPos, invisibleSumXPos], y: [0, 0] },
             { duration: 0.001 },
+            
           );
 
           y = Math.floor((x + 1) / result[0].length) + y;
@@ -376,7 +376,12 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
       const gap = 15;
       const plusWidth = 16;
       const spanWidth = 35;
+      let outputNumber = 1;
       let order = 1;
+      const sumY = outputMatrixDimension.y - 230
+      let plusOrder = 0
+      let minusOrder = 0
+      let symbolOrder = 0
       for (const step of steps) {
         if (
           step.status === "setup" &&
@@ -707,10 +712,231 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
           );
 
           partialProductDiv.setAttribute("data-pos", step.order);
+        }else if(step.status === 'output' && step.type === 'first'){
+
+          const product1Div = 
+          document.querySelector(
+            `.product[data-order="${step.a}"]`
+          )
+          const product1Span = product1Div.getElementsByTagName('span')[1]
+          const product1SpanDimension = product1Span.getBoundingClientRect() 
+          const product1SpanX = outputMatrixCenterPos - product1SpanDimension.x - product1SpanDimension.width / 2
+          await animate(product1Span,
+            {y: (sumY/2) },
+            {duration:0.5  * getSpeed()}
+          )
+          await animate(product1Span,
+            {x:product1SpanX,y: (sumY /2) },
+            {duration:0.5 * getSpeed()}
+          )
+          await animate(product1Span,
+            {x:product1SpanX,y: (sumY) },
+            {duration:0.5 * getSpeed()}
+          )
+          product1Div.setAttribute('data-pos',outputNumber)
+          outputNumber += 1
+        }else if(step.status === "output" && (step.type === "add" || step.type === 'subtract')){
+          const sumWidth = spanWidth * outputNumber 
+          + gap * outputNumber + plusWidth * (outputNumber )
+          const startX = outputMatrixCenterPos - sumWidth / 2
+
+          for (let i = 1; i <= outputNumber - 1; i++) {
+            const previousProductDiv = document.querySelector(
+              `.product[data-pos="${i}"]`,
+            );
+            const previousProductDivDimension = previousProductDiv.getBoundingClientRect()
+            const previousProductSpan = previousProductDiv.getElementsByTagName('span')[1]
+            const addedXPos = (i - 1) * (gap * 2 + spanWidth + plusWidth);
+            const previousX = startX - 
+            previousProductDivDimension.x + addedXPos
+            animate(
+              previousProductSpan,
+              { x: previousX },
+              { duration: 1 * getSpeed() },
+            );
+          }
+          for (let i = 1; i <= outputNumber - 2; i++) {
+              const previousSymbol = document.querySelector(
+                `div[symbolOrder="${i}"]`
+              ) 
+              const addedPlusXPos =
+                i * (spanWidth + gap) + (i - 1) * (gap + plusWidth);
+              animate(
+                previousSymbol,
+                { x: startX + addedPlusXPos },
+                { duration: 1 * getSpeed() },
+              );
+          }
+          
+          const mathSign =
+            step.type === "add"
+              ? document.getElementsByClassName("plus")[plusOrder]
+              : document.getElementsByClassName("minus")[minusOrder];
+          const mathSignDimension = 
+            mathSign.getBoundingClientRect()
+          const mathSignXPos = 
+          startX - mathSignDimension.x +
+              (outputNumber - 1) * (spanWidth + gap) +
+              (outputNumber - 2) * (gap + plusWidth);
+          const mathSignYPos = step.type === 'add'? 
+          outputMatrixDimension.y - 44:
+          outputMatrixDimension.y - 39
+          await animate(mathSign,{x:mathSignXPos,y: mathSignYPos},
+            {duration:0.001}
+          )
+          animate(
+            mathSign,
+            { opacity: 1, scale: [0, 1], x: mathSignXPos, y: mathSignYPos},
+            { duration: 0.5 * getSpeed(), delay: 1 * getSpeed() },
+          );
+          const currentDiv = 
+          document.querySelector(
+            `.product[data-order="${step.a}"]`
+          )
+          const currentDivDimension = currentDiv.getBoundingClientRect() 
+          const currentSpan = currentDiv.getElementsByTagName('span')[1]
+          const currentSpanX = 
+          startX - currentDivDimension.x + (outputNumber - 1) * (gap * 2 + spanWidth + plusWidth);
+          
+          await animate(
+            currentSpan,
+            {y:sumY / 2},
+            {duration:0.5 * getSpeed()}
+          )
+          await animate(
+            currentSpan,
+            {x:currentSpanX,y:sumY / 2},
+            {duration:0.5 * getSpeed()}
+          )
+          await animate(
+            currentSpan,
+            {x:currentSpanX,y:sumY},
+            {duration:0.5 * getSpeed()}
+
+          )
+          currentDiv.setAttribute('data-pos',outputNumber)
+          outputNumber += 1
+          symbolOrder += 1
+          mathSign.setAttribute('symbolOrder',symbolOrder)
+          plusOrder = step.type === 'add' ? plusOrder + 1 : plusOrder
+          minusOrder = step.type === 'subtract' ? minusOrder + 1 : minusOrder
+        }else if(step.status === 'output' && step.type ==='combine'){
+          const invisibleSum = document.getElementById("invisibleSum");
+          const invisibleSumSpan = invisibleSum.getElementsByTagName("span")[0];
+          const invisibleSumDimension = invisibleSum.getBoundingClientRect();
+          const invisibleSumXPos =
+            outputMatrixCenterPos - invisibleSumDimension.width / 2;
+          const invisibleSumYPos = outputMatrixDimension.y - 59   
+          invisibleSumSpan.textContent = step.value
+          await animate(
+            invisibleSum,
+            {
+              x: [invisibleSumXPos, invisibleSumXPos],
+              y: [invisibleSumYPos, invisibleSumYPos],
+            },
+            { duration: 0.001 },
+          );
+          await delayInMs(1000 * getSpeed());
+          for (let i = 1; i <= outputNumber - 1; i++) {
+            const currentDiv = document.querySelector(
+              `div[data-pos="${i}"]`,
+            );
+            const previousProductSpan =
+              currentDiv.getElementsByTagName("span")[1];
+            animate(
+              previousProductSpan,
+              { scale: 0 },
+              { duration: 0.8 * getSpeed(), ease: "easeOut" },
+            );
+          }
+          for (let i = 1; i <= outputNumber - 2; i++) {
+            const previousPlus = document.querySelector(
+              `div[symbolOrder="${i}"]`,
+            );
+            animate(
+              previousPlus,
+              { scale: 0 },
+              { duration: 0.8 * getSpeed(), ease: "easeOut" },
+            );
+          }
+          await animate(
+            invisibleSumSpan,
+            { scale: 1 },
+            { duration: 0.4 * getSpeed(), delay: 0.6 * getSpeed() },
+          );
+          const matrixInput = outputMatrix.querySelector(
+            `input[data-row="${step.a.row}"][data-col="${step.a.col}"]`,
+          );
+          const matrixInputDimension = matrixInput.getBoundingClientRect();
+          const invisibleSumXPos2 = matrixInputDimension.x - invisibleSumXPos;
+          const invisibleSumYPos2 = matrixInputDimension.y - invisibleSumYPos;
+          await delayInMs(100);
+          await animate(
+            invisibleSum,
+            {
+              x: invisibleSumXPos + invisibleSumXPos2,
+              y: invisibleSumYPos + invisibleSumYPos2,
+            },
+            { duration: 0.4 * getSpeed() },
+          );
+          matrixInput.value = step.value;
+          for (let i = 1; i <= outputNumber - 1; i++) {
+            const currentDiv = document.querySelector(
+              `div[data-pos="${i}"]`,
+            );
+            const previousProductSpan =
+              currentDiv.getElementsByTagName("span")[1];
+
+            await animate(
+              previousProductSpan,
+              { x: [0, 0], y: [0, 0] },
+              { duration: 0.001 },
+            );
+            
+            await animate(
+              previousProductSpan,
+              { scale: 1 },
+              { duration: 0.001},
+            );
+            currentDiv.removeAttribute('data-pos')
+          }
+          for (let i = 1; i <= outputNumber - 2; i++) {
+            const previousPlus = document.querySelector(
+              `div[symbolOrder="${i}"]`,
+            );
+            await animate(
+              previousPlus,
+              { x: [0, 0], y: [0, 0] },
+              { duration: 0.001 },
+            );
+            
+            previousPlus.removeAttribute('symbolOrder')
+          }
+          await animate(
+            invisibleSumSpan,
+            { scale: [0, 0] },
+            { duration: 0.001 },
+          );
+          await animate(
+            invisibleSum,
+            { x: [invisibleSumXPos, invisibleSumXPos], y: [0, 0] },
+            { duration: 0.001 },
+            
+          );
+          outputNumber = 1
+          symbolOrder = 0
+          plusOrder = 0
+          minusOrder = 0
+          if(getIsSkipped())break;
         }
       }
+      if (getIsSkipped) {
+        setMatrixInputFrom2dArray("outputMatrix", result);
+      }
+      setIsResultVisible(true);
+
     },
-    [animateMult],
+    [animateMult,setIsResultVisible],
   );
 
   useEffect(() => {

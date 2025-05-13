@@ -72,16 +72,17 @@ function RightBracket({ rowSize }) {
 
 const MatrixInputs = React.memo(function MatrixInputs({ rowSize, colSize,matrixOutput = false }) {
   const numberOfInputs = rowSize * colSize
-  // const [inputsData, setInputsData] = useState(Array.from({ length: numberOfInputs }, () => '3'))
   const [inputsData, setInputsData] = useState(Array.from({ length: numberOfInputs }, () => '3'))
+  // const [inputsData, setInputsData] = useState(Array.from({ length: numberOfInputs }, () => '3'))
   const inputsArray = Array.from({ length: numberOfInputs }, (_,i) => {
     return{row:Math.floor(i/colSize),col:i%colSize}
   });
   const started = useStartedStore((state) => state.started);
   const inputsContainerRef = useRef()
   useEffect(()=>{
-    // setInputsData(Array.from({ length: numberOfInputs }, () => ''))
-    setInputsData(Array.from({ length: numberOfInputs }, () => '3'))
+    setInputsData(Array.from({ length: numberOfInputs }, () => ''))
+
+    // setInputsData(Array.from({ length: numberOfInputs }, () => '3'))
     const inputs = Array.from(inputsContainerRef.current.getElementsByClassName("matrixInput"));
     inputs.forEach((input) => input.classList.remove("errorMatrixInput"));
 
