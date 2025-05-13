@@ -18,7 +18,7 @@ export function validateMatrixInput(matrixSize, matrixType, value) {
 
     if(value === ""){
       newValue = ""
-    }else if(value === "2" || value ==="4"){
+    }else if(value === "2"){
       newValue = value
     }else if(value.length === 2){
       newValue = value.slice(0,1)

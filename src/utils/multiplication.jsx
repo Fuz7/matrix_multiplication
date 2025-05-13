@@ -316,7 +316,7 @@ function strassenRecursive(A, B, steps) {
     status: "setup",
     type: "add",
     matrix: "a",
-    a: { row: 0, col: 1 },
+    a: { row: 0, col: 0 },
     b: { row: 0, col: 1 },
     value: A11 + A12,
     order:1

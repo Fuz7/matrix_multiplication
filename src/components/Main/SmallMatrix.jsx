@@ -98,7 +98,7 @@ export default function SmallMatrix({ inputMatrixes }) {
             aspect-square w-[50px] origin-center -translate-x-1/2
            items-center justify-center pb-[4px] opacity-0"
           >
-            <img className="w-[16px]" src={animatingMultSymbol} alt="" />
+            <img className="w-[16px] origin-center" src={animatingMultSymbol} alt="" />
           </div>
         </div>
         <div className="flex flex-col gap-[30px]">
