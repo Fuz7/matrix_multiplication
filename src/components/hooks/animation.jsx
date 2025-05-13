@@ -20,7 +20,7 @@ import {
   useResultMatrixSize,
   useStartedStore,
 } from "../../utils/store";
-import { span } from "motion/react-client";
+import { a, span } from "motion/react-client";
 
 export function useSmallStartButtonAnimation(started) {
   const [startButtonScope, animate] = useAnimate(null);
@@ -362,9 +362,15 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
       const matrix2CenterPos = matrix2Dimension.x + matrix2Dimension.width / 2;
       const outputMatrixCenterPos =
         outputMatrixDimension.x + outputMatrixDimension.width / 2;
+      const animatingMultSymbol = document.getElementById('animatingMultSymbol')
+      const animatingMultSymbolDimension = animatingMultSymbol.getBoundingClientRect()
+      const strassenButtonHeader = document.getElementById('strassenButtonHeader')
+      const strassenButtonHeaderDimension = strassenButtonHeader.getBoundingClientRect()
+      const productsYPlacement = strassenButtonHeaderDimension.y + 150  
       const gap = 15;
       const plusWidth = 16;
       const spanWidth = 35;
+      let order = 1
       for (const step of steps) {
         if (
           step.status === "setup" &&
@@ -419,36 +425,36 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
             { x: partialOutputX, y: partialOutputY },
             { duration: 0.001 },
           );
-          animateMult(firstSpan, { x: -120 }, { duration: 0.5 });
-          await animateMult(secondSpan, { x: 120 }, { duration: 0.5 });
-          animateMult(firstSpan, { x: -120, y: firstSpanY }, { duration: 0.5 });
+          animateMult(firstSpan, { x: -120 }, { duration: 0.5  * getSpeed()});
+          await animateMult(secondSpan, { x: 120 }, { duration: 0.5  * getSpeed()});
+          animateMult(firstSpan, { x: -120, y: firstSpanY }, { duration: 0.5  * getSpeed()});
           await animateMult(
             secondSpan,
             { x: 120, y: secondSpanY },
-            { duration: 0.5 },
+            { duration: 0.5 * getSpeed()},
           );
           animateMult(
             firstSpan,
             { x: firstSpanX, y: firstSpanY },
-            { duration: 0.5 },
+            { duration: 0.5 * getSpeed()},
           );
           animateMult(
             secondSpan,
             { x: secondSpanX, y: secondSpanY },
-            { duration: 0.5 },
+            { duration: 0.5 * getSpeed()},
           );
-          await animate(mathSign, { opacity: 1 }, { duration: 1 });
+          await animate(mathSign, { opacity: 1 }, { duration: 1  * getSpeed()});
           await delayInMs(500);
-          animate(mathSign, { opacity: 0, scale: 0 }, { duration: 1 });
+          animate(mathSign, { opacity: 0, scale: 0 }, { duration: 1  * getSpeed()});
           animateMult(
             firstSpan,
             { x: firstSpanX + 40, scale: 0, opacity: 0 },
-            { duration: 0.8, ease: "easeOut" },
+            { duration: 0.8 * getSpeed(), ease: "easeOut" },
           );
           animateMult(
             secondSpan,
             { x: secondSpanX - 40, scale: 0, opacity: 0 },
-            { duration: 0.8, ease: "easeOut" },
+            { duration: 0.8 * getSpeed(), ease: "easeOut" },
           );
           await animate(
             partialOutputSpan,
@@ -459,7 +465,7 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
               ease: "easeOut",
             },
           );
-          partialOutputSpan.setAttribute('data-pos',step.order)
+          partialOutputDiv.setAttribute('data-pos',step.order)
           await animate(
             mathSign,
             { x: 0, y: 0,scale:1},
@@ -475,8 +481,160 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
             { x: 0, y: 0,scale:1,opacity:1},
             { duration: 0.001 },
           )
-        }
+        } else if(step.status === 'setup' && step.type === 'combine'){
+          const partialOutput1Div = document.querySelector(
+            `div[data-pos="1"]`,
+          );
+          const partialOutput2Div = document.querySelector(
+            `div[data-pos="2"]`,
+          );
+          const partialOutput1Span = partialOutput1Div.getElementsByTagName("span")[0]; 
+          const partialOutput2Span = partialOutput2Div.getElementsByTagName("span")[0]; 
+          const partialOutput1X =  animatingMultSymbolDimension.x - 30
+          const partialOutput2X =  animatingMultSymbolDimension.x + 30
+          const partialOutputY = matrix1Dimension.y - 71
+          const productDiv = document.querySelector(`.product[data-order="${order}"]`)
+          const productSpan1 = productDiv.getElementsByTagName("span")[0];
+          const productSpan2 = productDiv.getElementsByTagName("span")[1];
+          const productDivFinalX = (animatingMultSymbolDimension.x + 10) 
+          + (order - 1) * 80
+          await animate(
+            productSpan1,
+            { scale: 0 },
+            {
+              duration: 0.001,
+            },
+          );
+          await animate(
+            productSpan2,
+            { scale: 0 },
+            {
+              duration: 0.001,
+            },
+          );
+          productSpan1.textContent = step.value;
+          productSpan2.textContent = step.value
+
+          await animate(
+            productDiv,
+            { x: animatingMultSymbolDimension.x + 10, y: partialOutputY + 5},
+            { duration: 0.001 },
+          )
+          animate(
+            partialOutput1Div,
+            { x: partialOutput1X, y: partialOutputY },
+            { duration: 1 * getSpeed(), },
+          );
+          animate(
+            partialOutput2Div,
+            { x: partialOutput2X, y: partialOutputY },
+            { duration: 1 * getSpeed(), },
+          );
+          await animateMult(
+            animatingMultSymbol,
+            { opacity: 1 },
+            { duration: 1 * getSpeed() },
+          );
+          await delayInMs(1000);
+
+          animateMult(
+            animatingMultSymbol,
+            { opacity: 0, scale: 0 },
+            { duration: 1 * getSpeed() },
+          );
+          animate(
+            partialOutput1Div,
+            { x: partialOutput1X + 45, scale: 0, opacity: 0 },
+            { duration: 1 * getSpeed(), },
+          );
+          animate(
+            partialOutput2Div,
+            { x: partialOutput2X - 45, scale: 0, opacity: 0 },
+            { duration: 1 * getSpeed(), },
+          );
+          await animate(
+            productSpan1,
+            { scale: 1 },
+            {
+              duration: 0.2 * getSpeed(),
+              delay: 0.6 * getSpeed(),
+              ease: "easeOut",
+            },
+          );
+          await delayInMs(200)
+          animate(
+            productSpan2,
+            { scale: 1 },
+            {
+              duration: 0.001 * getSpeed(),
+
+            },
+          );
+          await animate(
+            productDiv,
+            {y:(productsYPlacement + 120)},
+            { duration: 0.5 * getSpeed(), },
+          )
+          await animate(
+            productDiv,
+            {x:productDivFinalX,y:(productsYPlacement + 120)},
+            { duration: 0.5 * getSpeed(), },
+          )
+          await animate(
+            productDiv,
+            {y:(productsYPlacement)},
+            { duration: 0.5 * getSpeed(), },
+          )
+          partialOutput1Div.setAttribute('data-pos',0)
+          partialOutput2Div.setAttribute('data-pos',0)
+          partialOutput1Span.textContent = ""
+          partialOutput2Span.textContent = ""
+          
+          await animate(
+            partialOutput1Span,
+            { scale: 0 },
+            {
+              duration: 0.001,
+            },
+          )
+          await animate(
+            partialOutput2Span,
+            { scale: 0 },
+            {
+              duration: 0.001,
+            },
+          )
+
+          animate(
+            partialOutput1Div,
+            { x: 0,y:0, scale: 1, opacity: 1 },
+            { duration: 0.001 , },
+          );
+          await animate(
+            partialOutput2Div,
+            { x: 0,y:0, scale: 1, opacity: 1 },
+            { duration: 0.001 , },
+          );
+          order += 1
+        }else if(step.status === 'combine' && step.type === 'standby'){
+          const standbySpan =
+          step.matrix === "a"
+          ? getMatrixSpan(matrix1, step.a)
+          : getMatrixSpan(matrix2, step.a);
+          const standbySpanDimension = standbySpan.getBoundingClientRect(); 
+          const standbyX =
+          step.matrix === "a"
+            ? matrix1CenterPos
+            : matrix2CenterPos
+          const standbyY = matrix1Dimension.y - 70 
+          await animate(
+            standbySpan,
+            { x: standbyX, y: standbyY },
+            { duration: 0.001 },
+          );
+          
       }
+    }
     },
     [animateMult],
   );

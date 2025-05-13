@@ -17,6 +17,7 @@ import {
   InvisiblePartialOutput,
   InvisiblePlusSign,
   InvisibleProductSpan,
+  InvisibleProductStrassenSpan,
   InvisibleSumSpan,
 } from "./Animation";
 import { useEffect } from "react";
@@ -51,7 +52,7 @@ export default function SmallMatrix({ inputMatrixes }) {
       multMatrixScope.current.style.visibility = "visible";
     }, 50);
   }, [multMatrixScope]);
-
+  
   return (
     <div className="relative flex min-w-[100%] flex-col items-center gap-[45px]">
       <div
@@ -90,7 +91,7 @@ export default function SmallMatrix({ inputMatrixes }) {
               top: `-${
                 multiplicationType === "standard"
                   ? 160 + Number.parseInt(smallMatrix1Pos.row) * 20
-                  : "128"
+                  : "132"
               }px`,
             }}
             className="absolute left-1/2 flex 
@@ -147,7 +148,7 @@ export default function SmallMatrix({ inputMatrixes }) {
           })
         : invisibleStrassenProducts.map((order) => {
             return createPortal(
-              <InvisibleProductSpan order={order} />,
+              <InvisibleProductStrassenSpan order={order} />,
               document.body,
             );
           })}

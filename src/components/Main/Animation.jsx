@@ -27,10 +27,29 @@ export function InvisibleProductSpan({ order }) {
     leading-none text-[30px] text-white transform-[scale(0)]
        "
       ></span>
+
     </motion.div>
   );
 }
 
+export function InvisibleProductStrassenSpan({ order }) {
+  
+  return (
+    <motion.div 
+    data-order={order}
+    className="w-[30px] absolute top-0 left-0 aspect-square 
+     product flex">
+      <span
+        className="font-smt  aspect-square  
+    leading-none text-[30px] text-white transform-[scale(0)]
+       "
+      ></span>
+      <span className="font-smt  aspect-square  
+    leading-none text-[30px] text-white absolute top-0 left-0
+       transform-[scale(0)]"></span>
+    </motion.div>
+  );
+}
 export function InvisiblePlusSign({order}){
   return(
     <motion.div
