@@ -481,6 +481,13 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
             { x: 0, y: 0,scale:1,opacity:1},
             { duration: 0.001 },
           )
+          await animate(
+            partialOutputSpan,
+            { scale: 0 },
+            {
+              duration: 0.001
+            },
+          );
         } else if(step.status === 'setup' && step.type === 'combine'){
           const partialOutput1Div = document.querySelector(
             `div[data-pos="1"]`,
@@ -488,6 +495,9 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
           const partialOutput2Div = document.querySelector(
             `div[data-pos="2"]`,
           );
+          if(partialOutput1Div === null || partialOutput2Div === null) {
+            return;
+          }
           const partialOutput1Span = partialOutput1Div.getElementsByTagName("span")[0]; 
           const partialOutput2Span = partialOutput2Div.getElementsByTagName("span")[0]; 
           const partialOutput1X =  animatingMultSymbolDimension.x - 30
@@ -622,6 +632,12 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
           ? getMatrixSpan(matrix1, step.a)
           : getMatrixSpan(matrix2, step.a);
           const standbySpanDimension = standbySpan.getBoundingClientRect(); 
+          const partialProductDiv = document.querySelector(`.partialOutput[data-order="${step.order}"]`)
+          const partialProductSpan = partialProductDiv.getElementsByTagName("span")[0];
+          const partialProductSpanDimension = partialProductSpan.getBoundingClientRect();
+          
+          const partialProductX = standbySpanDimension.x - partialProductSpanDimension.x
+          partialProductSpan.textContent = step.value
           const standbyX =
           step.matrix === "a"
             ? matrix1CenterPos
@@ -632,7 +648,7 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
             { x: standbyX, y: standbyY },
             { duration: 0.001 },
           );
-          
+
       }
     }
     },

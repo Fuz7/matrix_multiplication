@@ -272,6 +272,7 @@ function strassenRecursive(A, B, steps) {
     type: "standby",
     matrix: "b",
     a: { row: 0, col: 0 },
+    value: B11,
     order:2,
   });
   steps.push({ status: "setup", type: "combine", value: m2,order:2 });
@@ -280,6 +281,7 @@ function strassenRecursive(A, B, steps) {
     type: "standby",
     matrix: "a",
     a: { row: 0, col: 0 },
+    value: A11,
     order:1
   });
   steps.push({
@@ -297,6 +299,7 @@ function strassenRecursive(A, B, steps) {
     type: "standby",
     matrix: "a",
     a: { row: 1, col: 1 },
+    value: A22,
     order:1,
   });
   steps.push({
@@ -323,6 +326,7 @@ function strassenRecursive(A, B, steps) {
     type: "standby",
     matrix: "b",
     a: { row: 1, col: 1 },
+    value: B22,
     order:2
   });
   steps.push({ status: "setup", type: "combine", value: m5,order:5 });
