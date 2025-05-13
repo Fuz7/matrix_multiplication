@@ -61,6 +61,23 @@ export function InvisibleMinusSign({order}){
   )
 }
 
+export function InvisiblePartialOutput({order}){
+  return(
+    <motion.div 
+    data-order={order}
+    className="w-[50px] absolute top-0 left-0 aspect-square 
+    flex justify-center items-center partialOutput">
+      <span
+        className="font-smt  aspect-square  text-center
+    leading-none text-[30px] text-white transform-[scale(0)]
+    flex items-center justify-center
+    origin-center"
+      ></span>
+    </motion.div>
+  )
+
+}
+
 export function InvisibleSumSpan(){
   return(
     <motion.div 

@@ -14,6 +14,7 @@ import { createPortal } from "react-dom";
 import {
   InvisibleMatrixInputSpan,
   InvisibleMinusSign,
+  InvisiblePartialOutput,
   InvisiblePlusSign,
   InvisibleProductSpan,
   InvisibleSumSpan,
@@ -35,6 +36,7 @@ export default function SmallMatrix({ inputMatrixes }) {
     { length: Number.parseInt(smallMatrix1Pos.col) },
     (_, i) => i + 1,
   );
+  const invisibleStrassenProducts = Array.from({ length: 7 }, (_, i) => i + 1);
   const multiplicationType = useMultiplicationType(
     (state) => state.multiplicationType,
   );
@@ -49,7 +51,7 @@ export default function SmallMatrix({ inputMatrixes }) {
       multMatrixScope.current.style.visibility = "visible";
     }, 50);
   }, [multMatrixScope]);
-  
+
   return (
     <div className="relative flex min-w-[100%] flex-col items-center gap-[45px]">
       <div
@@ -88,7 +90,7 @@ export default function SmallMatrix({ inputMatrixes }) {
               top: `-${
                 multiplicationType === "standard"
                   ? 160 + Number.parseInt(smallMatrix1Pos.row) * 20
-                  : "150"
+                  : "128"
               }px`,
             }}
             className="absolute left-1/2 flex 
@@ -136,13 +138,19 @@ export default function SmallMatrix({ inputMatrixes }) {
           spanInfo.data.parent,
         );
       })}
-      {matrixPositioned &&
-        invisibleProducts.map((order) => {
-          return createPortal(
-            <InvisibleProductSpan order={order} />,
-            document.body,
-          );
-        })}
+      {matrixPositioned && multiplicationType === "standard"
+        ? invisibleProducts.map((order) => {
+            return createPortal(
+              <InvisibleProductSpan order={order} />,
+              document.body,
+            );
+          })
+        : invisibleStrassenProducts.map((order) => {
+            return createPortal(
+              <InvisibleProductSpan order={order} />,
+              document.body,
+            );
+          })}
       {matrixPositioned &&
         invisiblePlusSign.map((order) => {
           return createPortal(
@@ -150,13 +158,24 @@ export default function SmallMatrix({ inputMatrixes }) {
             document.body,
           );
         })}
-      {matrixPositioned && multiplicationType === 'strassen' &&
+      {matrixPositioned &&
+        multiplicationType === "strassen" &&
         invisiblePlusSign.map((order) => {
           return createPortal(
             <InvisibleMinusSign order={order} />,
             document.body,
           );
         })}
+      
+      {matrixPositioned &&
+        multiplicationType === "strassen" &&
+        invisibleProducts.map((order)=>{
+          return createPortal(
+            <InvisiblePartialOutput order={order} />,
+            document.body
+          )
+        })
+      }
       {matrixPositioned && createPortal(<InvisibleSumSpan />, document.body)}
     </div>
   );

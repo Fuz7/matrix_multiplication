@@ -20,6 +20,7 @@ import {
   useResultMatrixSize,
   useStartedStore,
 } from "../../utils/store";
+import { span } from "motion/react-client";
 
 export function useSmallStartButtonAnimation(started) {
   const [startButtonScope, animate] = useAnimate(null);
@@ -367,7 +368,7 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
       for (const step of steps) {
         if (
           step.status === "setup" &&
-          (step.type === 'add' && step.type === "subtract")
+          (step.type === "add" || step.type === "subtract")
         ) {
           const firstSpan =
             step.matrix === "a"
@@ -393,14 +394,29 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
               ? document.getElementsByClassName("plus")[0]
               : document.getElementsByClassName("minus")[0];
           const mathSignX = firstSpanX + spanWidth + gap + startX;
-          const mathSignY = step.type === 'add'? matrix1Dimension.y - 66 : 
-          matrix1Dimension.y - 70
+          const mathSignY =
+            step.type === "add"
+              ? matrix1Dimension.y - 66
+              : matrix1Dimension.y - 70;
           const firstSpanY = mathSignY - firstSpanDimension.y;
           const secondSpanY = mathSignY - secondSpanDimension.y;
+          const partialOutputDiv = document.querySelector(
+            `.partialOutput[data-order="${step.order}"]`,
+          );
+          const partialOutputSpan =
+            partialOutputDiv.getElementsByTagName("span")[0];
+          partialOutputSpan.textContent = step.value;
+          const partialOutputX =  mathSignX - 18
+          const partialOutputY = matrix1Dimension.y - 71
           await delayInMs(1);
           await animate(
             mathSign,
             { x: mathSignX, y: matrix1Dimension.y - 50 },
+            { duration: 0.001 },
+          );
+          await animate(
+            partialOutputDiv,
+            { x: partialOutputX, y: partialOutputY },
             { duration: 0.001 },
           );
           animateMult(firstSpan, { x: -120 }, { duration: 0.5 });
@@ -421,8 +437,44 @@ export function useSmallMatrixAnimation(multMatrixScope, animateMult) {
             { x: secondSpanX, y: secondSpanY },
             { duration: 0.5 },
           );
-          animate(mathSign, { opacity: 1 }, { duration: 0.2 });
-          break;
+          await animate(mathSign, { opacity: 1 }, { duration: 1 });
+          await delayInMs(500);
+          animate(mathSign, { opacity: 0, scale: 0 }, { duration: 1 });
+          animateMult(
+            firstSpan,
+            { x: firstSpanX + 40, scale: 0, opacity: 0 },
+            { duration: 0.8, ease: "easeOut" },
+          );
+          animateMult(
+            secondSpan,
+            { x: secondSpanX - 40, scale: 0, opacity: 0 },
+            { duration: 0.8, ease: "easeOut" },
+          );
+          await animate(
+            partialOutputSpan,
+            { scale: 1 },
+            {
+              duration: 0.2 * getSpeed(),
+              delay: 0.6 * getSpeed(),
+              ease: "easeOut",
+            },
+          );
+          partialOutputSpan.setAttribute('data-pos',step.order)
+          await animate(
+            mathSign,
+            { x: 0, y: 0,scale:1},
+            { duration: 0.001 },
+          )
+          await animate(
+            firstSpan,
+            { x: 0, y: 0,scale:1,opacity:1},
+            { duration: 0.001 },
+          )
+          await animate(
+            secondSpan,
+            { x: 0, y: 0,scale:1,opacity:1},
+            { duration: 0.001 },
+          )
         }
       }
     },
